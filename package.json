@@ -2,9 +2,9 @@
   "name": "shayara_gold",
   "version": "1.0.0",
   "description": "",
-  "main": "home_page/best_selling_items.js",  // Correct path here
+  "main": "home_page/best_selling_items.js",
   "scripts": {
-    "start": "node home_page/best_selling_items.js",  // Correct start script path
+    "start": "node home_page/best_selling_items.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
