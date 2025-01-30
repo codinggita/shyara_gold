@@ -1,12 +1,12 @@
-# Shayara Gold
+# Shyara Gold
 
-This project is the backend service for the **Shayara Gold** website. It provides APIs to fetch data such as best-selling items and editorial content. The backend is connected to a MongoDB Atlas database.
+This project is the backend service for the **Shyara Gold** website. It provides APIs to fetch data such as best-selling items and editorial content. The backend is connected to a MongoDB Atlas database.
 
 ---
 
 ## Figma Design
 
-You can view the design for the **Shayara Gold** website on Figma:
+You can view the design for the **Shyara Gold** website on Figma:
 
 [Figma Design](<https://www.figma.com/design/lTnIkxTgfGHofztggyWUya/Shyara-Gold?node-id=0-1&t=yZXXIGJFexYjT8Hc-1>)
 
@@ -24,17 +24,17 @@ You can view and test the API using Postman:
 
 The backend service has been deployed and is live at:
 
-[Shayara Gold Backend](<https://shayara-gold.onrender.com>)
+[Shyara Gold Backend](<https://Shyara-gold.onrender.com>)
 
 You can access the following routes:
-- **Best Selling Items**: [https://shayara-gold.onrender.com/best_selling_items](https://shayara-gold.onrender.com/best_selling_items)
-- **Editorials**: [https://shayara-gold.onrender.com/editorials](https://shayara-gold.onrender.com/editorials)
+- **Best Selling Items**: [https://Shyara-gold.onrender.com/best_selling_items](https://Shyara-gold.onrender.com/best_selling_items)
+- **Editorials**: [https://Shyara-gold.onrender.com/editorials](https://Shyara-gold.onrender.com/editorials)
 
 ---
 
 ## Project Description
 
-**Shayara Gold** is an e-commerce platform focused on providing users with a curated selection of best-selling items and editorial content. This backend API serves data related to the homepage, fetching and serving collections such as best-selling items and editorial pieces.
+**Shyara Gold** is an e-commerce platform focused on providing users with a curated selection of best-selling items and editorial content. This backend API serves data related to the homepage, fetching and serving collections such as best-selling items and editorial pieces.
 
 ### Key Features:
 - **Best-selling items API**: Fetches the most popular items for the homepage.
