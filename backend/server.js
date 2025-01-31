@@ -1,13 +1,12 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
-require('dotenv').config(); // To use environment variables
 
 const app = express();
 const PORT = process.env.PORT || 4001; // Use environment port for Render
 
-// MongoDB connection details using environment variables
-const homeUri = process.env.HOME_MONGO_URI;
-const usersUri = process.env.USERS_MONGO_URI;
+// MongoDB connection details
+const homeUri = "mongodb+srv://Dhruveshshyara16:Dhruvesh1611@cluster1.mi6ov.mongodb.net/home_page?retryWrites=true&w=majority";
+const usersUri = "mongodb+srv://Dhruveshshyara16:Dhruvesh1611@cluster1.mi6ov.mongodb.net/users_collection?retryWrites=true&w=majority";
 
 let homeDb, bestSellingItems, editorials;
 let usersDb, usersDesignData;
@@ -16,14 +15,14 @@ let usersDb, usersDesignData;
 async function initializeDatabases() {
     try {
         // Connect to Home Page DB
-        const homeClient = await MongoClient.connect(homeUri);
+        const homeClient = await MongoClient.connect(homeUri, { useNewUrlParser: true, useUnifiedTopology: true });
         console.log("Connected to Home Page MongoDB");
         homeDb = homeClient.db("home_page");
         bestSellingItems = homeDb.collection("best_selling_items");
         editorials = homeDb.collection("editorials");
 
         // Connect to Users Collection DB
-        const usersClient = await MongoClient.connect(usersUri);
+        const usersClient = await MongoClient.connect(usersUri, { useNewUrlParser: true, useUnifiedTopology: true });
         console.log("Connected to Users Collection MongoDB");
         usersDb = usersClient.db("users_collection");
         usersDesignData = usersDb.collection("users_design_data");
@@ -35,7 +34,7 @@ async function initializeDatabases() {
 
     } catch (err) {
         console.error("Error connecting to MongoDB:", err);
-        process.exit(1); // Terminate the app if DB connection fails
+        process.exit(1);
     }
 }
 
@@ -50,7 +49,6 @@ app.get('/best_selling_items', async (req, res) => {
         const items = await bestSellingItems.find().toArray();
         res.status(200).json(items);
     } catch (err) {
-        console.error("Error fetching items:", err);
         res.status(500).send("Error fetching items: " + err.message);
     }
 });
@@ -60,7 +58,6 @@ app.get('/editorials', async (req, res) => {
         const editorialData = await editorials.find().toArray();
         res.status(200).json(editorialData);
     } catch (err) {
-        console.error("Error fetching editorials:", err);
         res.status(500).send("Error fetching editorials: " + err.message);
     }
 });
@@ -71,7 +68,6 @@ app.get('/users_design_data', async (req, res) => {
         const users = await usersDesignData.find().toArray();
         res.status(200).json(users);
     } catch (err) {
-        console.error("Error fetching users:", err);
         res.status(500).send("Error fetching users: " + err.message);
     }
 });
@@ -87,7 +83,7 @@ app.post('/users_design_data', async (req, res) => {
         const result = await usersDesignData.insertOne(newUserData);
         res.status(201).json({ message: "User data added successfully", data: result });
     } catch (err) {
-        console.error("Error adding user data:", err);  // Log the error
         res.status(500).send("Error adding user data: " + err.message);
     }
 });
+
