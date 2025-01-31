@@ -1,5 +1,5 @@
 {
-  "name": "shayara_gold",
+  "name": "shyara_gold",
   "version": "1.0.0",
   "description": "Shayara Gold backend service",
   "main": "backend/server.js",
