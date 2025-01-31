@@ -30,7 +30,8 @@ async function initializeDatabases() {
 
         // Start server after DB connections
         app.listen(PORT, () => {
-            console.log(Server running at http://localhost:${PORT});
+            console.log(`Server running at http://localhost:${PORT}`);
+
         });
 
     } catch (err) {
