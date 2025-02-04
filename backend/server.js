@@ -46,7 +46,9 @@ MongoClient.connect(mongoUri)
         usersDesignData = db.collection('users_design_data');
         console.log('Connected to MongoDB');
     })
-    .catch(err => console.error('MongoDB Connection Error:', err));
+    .catch(err => {
+        console.error('MongoDB Connection Error:', err);
+    });
 
 // POST route to add new jewelry design
 app.post('/users_design_data', upload.single('image'), async (req, res) => {
@@ -73,6 +75,10 @@ app.post('/users_design_data', upload.single('image'), async (req, res) => {
 // GET route to fetch all jewelry designs
 app.get('/users_design_data', async (req, res) => {
     try {
+        if (!usersDesignData) {
+            return res.status(500).json({ message: "Database not initialized" });
+        }
+
         const designs = await usersDesignData.find().toArray();
         res.json(designs);
     } catch (err) {
