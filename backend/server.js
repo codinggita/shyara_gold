@@ -16,7 +16,7 @@ if (!MONGO_URI) {
 
 // Fix CORS issue by allowing localhost + Render frontend
 app.use(cors({
-    origin: ['http://localhost:5174', 'http://localhost:5175', 'https://your-render-frontend-url.com'],
+    origin: ['http://localhost:5174', 'http://localhost:5175', 'https://shayara-gold.onrender.com'],
     methods: ['GET', 'POST'],
     credentials: true,
 }));
@@ -51,7 +51,7 @@ async function connectToDatabase() {
         usersDesignData = db.collection('users_design_data');
         console.log('✅ Connected to MongoDB');
 
-        // Start the server only after DB is connected
+        // Start the server after DB connection is successful
         const PORT = process.env.PORT || 3002;
         app.listen(PORT, () => {
             console.log(`🚀 Server running on ${BASE_URL}`);
