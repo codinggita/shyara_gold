@@ -4,7 +4,14 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config(); // To use environment variables
 
 const app = express();
-app.use(cors()); 
+
+const corsOptions = {
+    origin: 'http://localhost:5174',  // Allow your frontend origin
+    methods: 'GET,POST',              // Allow specific HTTP methods
+    allowedHeaders: 'Content-Type',   // Allow specific headers
+};
+app.use(cors(corsOptions));
+
 const PORT = process.env.PORT || 4001; // Use environment port for Render
 
 // MongoDB connection details using environment variables
@@ -82,16 +89,16 @@ app.get('/users_design_data', async (req, res) => {
 
 // POST: Add new user design data
 app.post('/users_design_data', async (req, res) => {
-    console.log("POST request received on /users_design_data");  // This will log when the POST request is made
+    console.log("POST request received on /users_design_data");
     try {
         const newUserData = req.body; // Data sent in the body of the POST request
-        console.log("Received Data:", newUserData);  // This will log the actual data sent in the POST request
+        console.log("Received Data:", newUserData);
 
         // Insert the new user data into the users_design_data collection
         const result = await usersDesignData.insertOne(newUserData);
         res.status(201).json({ message: "User data added successfully", data: result });
     } catch (err) {
-        console.error("Error adding user data:", err);  // Log the error
+        console.error("Error adding user data:", err);
         res.status(500).send("Error adding user data: " + err.message);
     }
 });
