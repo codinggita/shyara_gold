@@ -11,7 +11,7 @@ const BASE_URL = process.env.BASE_URL || 'https://shayara-gold.onrender.com';
 
 // Fix CORS issue by allowing localhost + Render frontend
 app.use(cors({
-    origin: ['http://localhost:5174', 'http://localhost:5175', 'https://shayara-gold.onrender.com'],
+    origin: ['http://localhost:5173','http://localhost:5174', 'http://localhost:5175', 'https://shayara-gold.onrender.com'],
     methods: ['GET', 'POST'],
     credentials: true,
 }));
