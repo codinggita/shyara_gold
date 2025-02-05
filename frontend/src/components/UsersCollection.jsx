@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import '../App.css';
 
-const API_URL = "https://shayara-gold.onrender.com/users_design_data";  
+const API_URL = "https://shayara-gold.onrender.com/users_design_data";
 
 const UsersCollection = () => {
   const [designs, setDesigns] = useState([]);
@@ -79,8 +80,7 @@ const UsersCollection = () => {
       setSelectedFile(null);
       setPreviewUrl('');
 
-      fetchDesigns(); // Refresh gallery
-
+      fetchDesigns();
     } catch (error) {
       console.error('Error submitting design:', error);
       setError('Failed to submit design. Please try again.');
@@ -97,72 +97,72 @@ const UsersCollection = () => {
             <span className="logoText">DETAIL GOLD</span>
           </div>
           <div className="searchContainer">
-            <input type="text" placeholder="search" className="searchInput" />
+            <input type="text" placeholder="Search" className="searchInput" />
             <Search className="searchIcon" size={14} />
           </div>
         </div>
         <div className="navLinks">
-          <a href="#" className="navLink">Home</a>
-          <a href="#" className="navLink activeLink">Collection</a>
-          <a href="#" className="navLink">About Us</a>
-          <a href="#" className="navLink">Contact Us</a>
+          <Link to="/" className="navLink">Home</Link>
+          <Link to="/users-collection" className="navLink activeLink">Collection</Link>
+          <Link to="/about" className="navLink">About Us</Link>
+          <Link to="/contact" className="navLink">Contact Us</Link>
         </div>
       </nav>
 
       <div className="breadcrumb">
-        Home &gt; Collection &gt; <span className="redText">Add Collection</span>
+        Home &gt; <span className="redText">Collection</span>
       </div>
 
-      <div className="mainContent">
-        <h1 className="title">Customers Design</h1>
+      <h1 className="title">Customers Design</h1>
 
-        {/* Gallery Grid */}
-        <div className="grid">
-          {designs.length > 0 ? (
-            designs.map((design) => (
-              <div key={design._id} className="imageContainer">
-                <img src={design.imageUrl || "/placeholder.jpg"} alt={`Design by ${design.name}`} className="image" />
-              </div>
-            ))
-          ) : (
-            <p>No designs available</p>
-          )}
-        </div>
-
-        <h2 className="addDesignText">Add Your Design</h2>
-
-        <div className="formContainer">
-          <h3 className="formTitle">Details</h3>
-          {error && <p className="errorText">{error}</p>}
-          <form onSubmit={handleSubmit}>
-            <div className="formGroup">
-              <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Enter your name" className="input" required />
+      {/* Gallery Grid */}
+      <div className="grid">
+        {designs.length > 0 ? (
+          designs.map((design) => (
+            <div key={design._id} className="imageContainer">
+              <img src={design.imageUrl || "/placeholder.jpg"} alt={`Design by ${design.name}`} className="image" />
             </div>
-            <div className="formGroup">
-              <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email" className="input" required />
-            </div>
-            <div className="formGroup">
-              <input type="text" name="mobile" value={formData.mobile} onChange={handleInputChange} placeholder="Enter your mobile number" className="input" required />
-            </div>
-            <div className="formGroup">
-              <input type="text" name="material" value={formData.material} onChange={handleInputChange} placeholder="Preferred material" className="input" required />
-            </div>
-            <div className="formGroup">
-              <input type="text" name="style" value={formData.style} onChange={handleInputChange} placeholder="Design style" className="input" required />
-            </div>
-            <div className="formGroup">
-              <input type="text" name="goldType" value={formData.goldType} onChange={handleInputChange} placeholder="Type of gold" className="input" required />
-            </div>
-            <div className="formGroup">
-              <input type="file" onChange={handleFileChange} accept="image/*" required />
-              {previewUrl && <img src={previewUrl} alt="Preview" width="100" />}
-            </div>
-            <button type="submit" className="submitButton" disabled={loading}>
-              {loading ? 'Uploading...' : 'Send'}
-            </button>
-          </form>
-        </div>
+          ))
+        ) : (
+          <p>No designs available</p>
+        )}
       </div>
+
+      <h2 className="addDesignText">Add Your Design</h2>
+
+      <div className="formContainer">
+        <h3 className="formTitle">Details</h3>
+        {error && <p className="errorText">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="formGroup">
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Enter your name" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="mobile" value={formData.mobile} onChange={handleInputChange} placeholder="Enter your mobile number" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="material" value={formData.material} onChange={handleInputChange} placeholder="Preferred material" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="style" value={formData.style} onChange={handleInputChange} placeholder="Design style" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="goldType" value={formData.goldType} onChange={handleInputChange} placeholder="Type of gold" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="file" onChange={handleFileChange} accept="image/*" required />
+            {previewUrl && <img src={previewUrl} alt="Preview" width="100" />}
+          </div>
+          <button type="submit" className="submitButton" disabled={loading}>
+            {loading ? 'Uploading...' : 'Send'}
+          </button>
+        </form>
+      </div>
+
+      <Link to="/" className="backLink">Back to Home</Link>
     </div>
   );
 };
