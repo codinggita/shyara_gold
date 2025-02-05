@@ -4,7 +4,12 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config(); // To use environment variables
 
 const app = express();
-app.use(cors()); 
+app.use(cors({
+    origin: "http://localhost:5173", // Allow frontend
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true
+}));
+
 // const PORT = process.env.PORT || 4001; // Use environment port for Render
 const PORT = process.env.PORT || 4001; // Use environment port for Render
 
