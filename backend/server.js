@@ -1,90 +1,94 @@
-const express = require("express");
-const cors = require("cors");
-const { MongoClient } = require("mongodb");
-require("dotenv").config();
+const express = require('express');
+const { MongoClient } = require('mongodb');
+const multer = require('multer');
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 
-// ✅ Allow frontend domain & handle CORS properly
-const allowedOrigins = [
-    "http://localhost:5173",
-    "https://shyara-gold.onrender.com", // ✅ Replace with your deployed frontend domain when available
-];
+const BASE_URL = process.env.BASE_URL || 'https://shayara-gold.onrender.com';
 
+// Fix CORS issue by allowing localhost + Render frontend
 app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true
+    origin: ['http://localhost:5174', 'http://localhost:5175', 'https://shayara-gold.onrender.com'],
+    methods: ['GET', 'POST'],
+    credentials: true,
 }));
 
-app.use(express.json()); // Middleware for JSON parsing
+// Middleware
+app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
-// MongoDB connection details
-const homeUri = process.env.HOME_MONGO_URI;
-const usersUri = process.env.USERS_MONGO_URI;
-
-let homeDb, bestSellingItems, editorials;
-let usersDb, usersDesignData;
-
-// Initialize MongoDB
-async function initializeDatabases() {
-    try {
-        const homeClient = await MongoClient.connect(homeUri);
-        console.log("Connected to Home Page MongoDB");
-        homeDb = homeClient.db("home_page");
-        bestSellingItems = homeDb.collection("best_selling_items");
-        editorials = homeDb.collection("editorials");
-
-        const usersClient = await MongoClient.connect(usersUri);
-        console.log("Connected to Users Collection MongoDB");
-        usersDb = usersClient.db("users_collection");
-        usersDesignData = usersDb.collection("users_design_data");
-
-        // ✅ Start server after DB connections
-        const PORT = process.env.PORT || 4001;
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-
-    } catch (err) {
-        console.error("Error connecting to MongoDB:", err);
-        process.exit(1);
-    }
-}
-
-initializeDatabases();
-
-// ✅ Test route to check CORS headers
-app.get("/test", (req, res) => {
-    res.json({ message: "CORS is working!" });
+// Multer configuration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 
-// Routes
-app.get("/users_design_data", async (req, res) => {
-    try {
-        const users = await usersDesignData.find().toArray();
-        res.status(200).json(users);
-    } catch (err) {
-        console.error("Error fetching users:", err);
-        res.status(500).send("Error fetching users: " + err.message);
+const upload = multer({ 
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|gif/;
+        const isValidType = filetypes.test(file.mimetype) && filetypes.test(path.extname(file.originalname).toLowerCase());
+        cb(null, isValidType);
     }
 });
 
-app.post("/users_design_data", async (req, res) => {
-    console.log("POST request received on /users_design_data");
+// MongoDB Connection
+const mongoUri = process.env.MONGO_URI;
+let db, usersDesignData;
+
+MongoClient.connect(mongoUri)
+    .then(client => {
+        db = client.db('shyaragold'); 
+        usersDesignData = db.collection('users_design_data');
+        console.log('Connected to MongoDB');
+    })
+    .catch(err => {
+        console.error('MongoDB Connection Error:', err);
+    });
+
+// POST route to add new jewelry design
+app.post('/users_design_data', upload.single('image'), async (req, res) => {
     try {
-        const newUserData = req.body;
-        console.log("Received Data:", newUserData);
-        const result = await usersDesignData.insertOne(newUserData);
-        res.status(201).json({ message: "User data added successfully", data: result });
+        const newUserData = {
+            name: req.body.name,
+            email: req.body.email,
+            mobile: req.body.mobile,
+            material: req.body.material,
+            style: req.body.style,
+            goldType: req.body.goldType,
+            imageUrl: req.file ? `${BASE_URL}/uploads/${req.file.filename}` : null,
+            createdAt: new Date(),
+        };
+
+        await usersDesignData.insertOne(newUserData);
+        res.status(201).json({ message: "Design submitted successfully", data: newUserData });
     } catch (err) {
-        console.error("Error adding user data:", err);
-        res.status(500).send("Error adding user data: " + err.message);
+        console.error("Error adding design:", err);
+        res.status(500).json({ message: "Error adding design", error: err.message });
     }
+});
+
+// GET route to fetch all jewelry designs
+app.get('/users_design_data', async (req, res) => {
+    try {
+        if (!usersDesignData) {
+            return res.status(500).json({ message: "Database not initialized" });
+        }
+
+        const designs = await usersDesignData.find().toArray();
+        res.json(designs);
+    } catch (err) {
+        console.error("Error fetching designs:", err);
+        res.status(500).json({ message: "Error fetching designs", error: err.message });
+    }
+});
+
+// Start Server
+const PORT = process.env.PORT || 3002;
+app.listen(PORT, () => {
+    console.log(`Server running on ${BASE_URL}`);
 });
