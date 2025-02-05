@@ -6,8 +6,13 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-
 const BASE_URL = process.env.BASE_URL || 'https://shayara-gold.onrender.com';
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+    console.error("❌ MONGO_URI is missing in environment variables.");
+    process.exit(1);
+}
 
 // Fix CORS issue by allowing localhost + Render frontend
 app.use(cors({
@@ -37,22 +42,35 @@ const upload = multer({
 });
 
 // MongoDB Connection
-const mongoUri = process.env.MONGO_URI;
 let db, usersDesignData;
 
-MongoClient.connect(mongoUri)
-    .then(client => {
-        db = client.db('shyaragold'); 
+async function connectToDatabase() {
+    try {
+        const client = await MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+        db = client.db('shyaragold');
         usersDesignData = db.collection('users_design_data');
-        console.log('Connected to MongoDB');
-    })
-    .catch(err => {
-        console.error('MongoDB Connection Error:', err);
-    });
+        console.log('✅ Connected to MongoDB');
+
+        // Start the server only after DB is connected
+        const PORT = process.env.PORT || 3002;
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on ${BASE_URL}`);
+        });
+    } catch (error) {
+        console.error('❌ MongoDB Connection Error:', error);
+        process.exit(1); // Stop execution if DB connection fails
+    }
+}
+
+connectToDatabase();
 
 // POST route to add new jewelry design
 app.post('/users_design_data', upload.single('image'), async (req, res) => {
     try {
+        if (!usersDesignData) {
+            return res.status(500).json({ message: "Database not initialized" });
+        }
+
         const newUserData = {
             name: req.body.name,
             email: req.body.email,
@@ -67,7 +85,7 @@ app.post('/users_design_data', upload.single('image'), async (req, res) => {
         await usersDesignData.insertOne(newUserData);
         res.status(201).json({ message: "Design submitted successfully", data: newUserData });
     } catch (err) {
-        console.error("Error adding design:", err);
+        console.error("❌ Error adding design:", err);
         res.status(500).json({ message: "Error adding design", error: err.message });
     }
 });
@@ -82,13 +100,7 @@ app.get('/users_design_data', async (req, res) => {
         const designs = await usersDesignData.find().toArray();
         res.json(designs);
     } catch (err) {
-        console.error("Error fetching designs:", err);
+        console.error("❌ Error fetching designs:", err);
         res.status(500).json({ message: "Error fetching designs", error: err.message });
     }
-});
-
-// Start Server
-const PORT = process.env.PORT || 3002;
-app.listen(PORT, () => {
-    console.log(`Server running on ${BASE_URL}`);
 });
