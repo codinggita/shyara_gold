@@ -40,11 +40,6 @@ const upload = multer({
 const mongoUri = process.env.MONGO_URI;
 let db, usersDesignData;
 
-if (!mongoUri) {
-    console.error("❌ MongoDB connection string is missing! Check your environment variables.");
-    process.exit(1); // Stop the server if MONGO_URI is missing
-}
-
 MongoClient.connect(mongoUri)
     .then(client => {
         db = client.db('shyaragold'); 
