@@ -6,11 +6,12 @@ require('dotenv').config(); // To use environment variables
 const app = express();
 
 const corsOptions = {
-    origin: 'http://localhost:5174',  // Allow your frontend origin
-    methods: 'GET,POST',              // Allow specific HTTP methods
-    allowedHeaders: 'Content-Type',   // Allow specific headers
+    origin: process.env.NODE_ENV === 'production' ? 'https://shayara-gold.onrender.com' : 'http://localhost:5174',  // Allow localhost for dev and your deployed URL for production
+    methods: 'GET,POST',  // Allow specific HTTP methods
+    allowedHeaders: 'Content-Type',  // Allow specific headers
 };
-app.use(cors(corsOptions));
+
+app.use(cors(corsOptions));  // Apply the CORS options
 
 const PORT = process.env.PORT || 4001; // Use environment port for Render
 
