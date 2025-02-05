@@ -1,106 +1,98 @@
 const express = require('express');
+const cors = require('cors')
 const { MongoClient } = require('mongodb');
-const multer = require('multer');
-const path = require('path');
-const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config(); // To use environment variables
 
 const app = express();
-const BASE_URL = process.env.BASE_URL || 'https://shayara-gold.onrender.com';
-const MONGO_URI = process.env.MONGO_URI;
+app.use(cors()); 
+// const PORT = process.env.PORT || 4001; // Use environment port for Render
+const PORT = process.env.PORT || 4001; // Use environment port for Render
 
-if (!MONGO_URI) {
-    console.error("❌ MONGO_URI is missing in environment variables.");
-    process.exit(1);
+// MongoDB connection details using environment variables
+const homeUri = process.env.HOME_MONGO_URI;
+const usersUri = process.env.USERS_MONGO_URI;
+
+let homeDb, bestSellingItems, editorials;
+let usersDb, usersDesignData;
+
+// Initialize MongoDB for both databases
+async function initializeDatabases() {
+    try {
+        // Connect to Home Page DB
+        const homeClient = await MongoClient.connect(homeUri);
+        console.log("Connected to Home Page MongoDB");
+        homeDb = homeClient.db("home_page");
+        bestSellingItems = homeDb.collection("best_selling_items");
+        editorials = homeDb.collection("editorials");
+
+        // Connect to Users Collection DB
+        const usersClient = await MongoClient.connect(usersUri);
+        console.log("Connected to Users Collection MongoDB");
+        usersDb = usersClient.db("users_collection");
+        usersDesignData = usersDb.collection("users_design_data");
+
+        // Start server after DB connections
+        app.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}`);
+
+        });
+
+    } catch (err) {
+        console.error("Error connecting to MongoDB:", err);
+        process.exit(1); // Terminate the app if DB connection fails
+    }
 }
 
-// Fix CORS issue by allowing localhost + Render frontend
-app.use(cors({
-    origin: ['http://localhost:5174', 'http://localhost:5175', 'https://shayara-gold.onrender.com'],
-    methods: ['GET', 'POST'],
-    credentials: true,
-}));
+initializeDatabases();
 
 // Middleware
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
 
-// Multer configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-
-const upload = multer({ 
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|gif/;
-        const isValidType = filetypes.test(file.mimetype) && filetypes.test(path.extname(file.originalname).toLowerCase());
-        cb(null, isValidType);
-    }
-});
-
-// MongoDB Connection
-let db, usersDesignData;
-
-async function connectToDatabase() {
+// Home Page Routes
+app.get('/best_selling_items', async (req, res) => {
     try {
-        const client = await MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-        db = client.db('shyaragold');
-        usersDesignData = db.collection('users_design_data');
-        console.log('✅ Connected to MongoDB');
-
-        // Start the server after DB connection is successful
-        const PORT = process.env.PORT || 3002;
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on ${BASE_URL}`);
-        });
-    } catch (error) {
-        console.error('❌ MongoDB Connection Error:', error);
-        process.exit(1); // Stop execution if DB connection fails
-    }
-}
-
-connectToDatabase();
-
-// POST route to add new jewelry design
-app.post('/users_design_data', upload.single('image'), async (req, res) => {
-    try {
-        if (!usersDesignData) {
-            return res.status(500).json({ message: "Database not initialized" });
-        }
-
-        const newUserData = {
-            name: req.body.name,
-            email: req.body.email,
-            mobile: req.body.mobile,
-            material: req.body.material,
-            style: req.body.style,
-            goldType: req.body.goldType,
-            imageUrl: req.file ? `${BASE_URL}/uploads/${req.file.filename}` : null,
-            createdAt: new Date(),
-        };
-
-        await usersDesignData.insertOne(newUserData);
-        res.status(201).json({ message: "Design submitted successfully", data: newUserData });
+        const items = await bestSellingItems.find().toArray();
+        res.status(200).json(items);
     } catch (err) {
-        console.error("❌ Error adding design:", err);
-        res.status(500).json({ message: "Error adding design", error: err.message });
+        console.error("Error fetching items:", err);
+        res.status(500).send("Error fetching items: " + err.message);
     }
 });
 
-// GET route to fetch all jewelry designs
+app.get('/editorials', async (req, res) => {
+    try {
+        const editorialData = await editorials.find().toArray();
+        res.status(200).json(editorialData);
+    } catch (err) {
+        console.error("Error fetching editorials:", err);
+        res.status(500).send("Error fetching editorials: " + err.message);
+    }
+});
+
+// Users Collection Routes
 app.get('/users_design_data', async (req, res) => {
     try {
-        if (!usersDesignData) {
-            return res.status(500).json({ message: "Database not initialized" });
-        }
-
-        const designs = await usersDesignData.find().toArray();
-        res.json(designs);
+        const users = await usersDesignData.find().toArray();
+        res.status(200).json(users);
     } catch (err) {
-        console.error("❌ Error fetching designs:", err);
-        res.status(500).json({ message: "Error fetching designs", error: err.message });
+        console.error("Error fetching users:", err);
+        res.status(500).send("Error fetching users: " + err.message);
+    }
+});
+
+// POST: Add new user design data
+app.post('/users_design_data', async (req, res) => {
+    console.log("POST request received on /users_design_data");  // This will log when the POST request is made
+    try {
+        // {name , email ,mobileNumber,jewelleryType,category,imageUrl }
+        const newUserData = req.body; // Data sent in the body of the POST request
+        console.log("Received Data:", newUserData);  // This will log the actual data sent in the POST request
+
+        // Insert the new user data into the users_design_data collection
+        const result = await usersDesignData.insertOne(newUserData);
+        res.status(201).json({ message: "User data added successfully", data: result });
+    } catch (err) {
+        console.error("Error adding user data:", err);  // Log the error
+        res.status(500).send("Error adding user data: " + err.message);
     }
 });
