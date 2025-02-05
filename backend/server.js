@@ -11,7 +11,7 @@ const corsOptions = {
     allowedHeaders: 'Content-Type',  // Allow specific headers
 };
 
-app.use(cors(corsOptions));  // Apply the CORS options
+app.use(cors());  // Apply the CORS options
 
 const PORT = process.env.PORT || 4001; // Use environment port for Render
 
