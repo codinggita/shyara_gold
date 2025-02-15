@@ -1,0 +1,205 @@
+Global Styles
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #FDF2F5;
+    overflow-x: hidden;
+  }
+  
+  /* Navbar Styles */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background-color: #a42727;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    height: 60px;
+    width: 100%;
+  }
+  
+  .navbar .leftSection {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+  }
+  
+  .navbar .logoText {
+    color: #F59E0B;
+    font-size: 0.7rem;
+  }
+  
+  .navbar .searchContainer {
+    position: relative;
+  }
+  
+  .navbar .searchInput {
+    padding-left: 2rem;
+    padding-right: 1rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    border-radius: 9999px;
+    background-color: #FDF2F5;
+    width: 200px;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+  }
+  
+  .navbar .searchIcon {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+  }
+  
+  .navbar .navLinks {
+    display: flex;
+    gap: 1.2rem;
+    font-size: 0.9rem;
+  }
+  
+  .navbar .navLink {
+    text-decoration: none;
+    color: #1F2937;
+  }
+  
+  .navbar .activeLink {
+    color: #D97706;
+  }
+  
+  /* Breadcrumb Styles */
+  .breadcrumb {
+    padding: 0.75rem 1.5rem;
+    color: #4B5563;
+    font-size: 0.9rem;
+  }
+  
+  .breadcrumb .redText {
+    color: #DC2626;
+  }
+  
+  /* Main Content Styles */
+  .mainContent {
+    padding: 0.5rem 1.5rem;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .mainContent .title {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-family: serif;
+    position: relative;
+  }
+  
+  .mainContent .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 0 auto 2rem auto;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .mainContent .imageContainer {
+    aspect-ratio: 1;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background-color: #fff;
+    padding: 0.4rem;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .mainContent .imageContainer:hover {
+    transform: scale(1.05);
+  }
+  
+  .mainContent .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.6rem;
+  }
+  
+  .mainContent .addDesignText {
+    text-align: center;
+    font-size: 1.3rem;
+    font-family: serif;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Form Styles */
+  .formContainer {
+    background-color: rgba(158, 158, 158, 0.2);
+    padding: 1.5rem;
+    border-radius: 0.8rem;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 2rem auto;
+    backdrop-filter: blur(5px);
+  }
+  
+  .formContainer .formTitle {
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-family: serif;
+    color: #333;
+  }
+  
+  .formContainer .formGroup {
+    margin-bottom: 1rem;
+  }
+  
+  .formContainer .input {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 0.4rem;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    outline: none;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .formContainer .submitButton {
+    background-color: #D97706;
+    color: #fff;
+    padding: 0.6rem 2rem;
+    border-radius: 0.4rem;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin: 1.5rem auto 0;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .formContainer .submitButton:hover {
+    background-color: #B45309;
+  }
+  
