@@ -5,8 +5,6 @@ import '../style/Users_Collection.css';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-// import logo from '../assets/img/logo.png';
-
 const API_URL = "https://shyara-gold.onrender.com/users_design_data";
 
 const UsersCollection = () => {
@@ -22,7 +20,9 @@ const UsersCollection = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchDesigns();
@@ -30,13 +30,19 @@ const UsersCollection = () => {
 
   const fetchDesigns = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Failed to fetch designs');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch designs: ${errorText}`);
+      }
       const data = await response.json();
       setDesigns(data);
     } catch (error) {
       console.error('Error fetching designs:', error);
-      setError('Failed to load designs');
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,8 +53,13 @@ const UsersCollection = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const validTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        setError("Only JPG, PNG, and WEBP images are allowed");
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) {
-        setError('File size should be less than 5MB');
+        setError("File size should be less than 5MB");
         return;
       }
       setSelectedFile(file);
@@ -63,6 +74,7 @@ const UsersCollection = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMessage('');
 
     try {
       const formDataToSend = new FormData();
@@ -79,6 +91,7 @@ const UsersCollection = () => {
       setFormData({ name: '', email: '', mobile: '', material: '', style: '', goldType: '' });
       setSelectedFile(null);
       setPreviewUrl('');
+      setSuccessMessage('Design submitted successfully!');
 
       fetchDesigns();
     } catch (error) {
@@ -97,39 +110,63 @@ const UsersCollection = () => {
 
       <h1 className="title">Customers Design</h1>
 
-      <div className="grid">
-        {designs.length > 0 ? (
-          designs.map((design) => (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : designs.length > 0 ? (
+        <div className="grid">
+          {designs.map((design) => (
             <div key={design._id} className="imageContainer">
-              <img src={design.imageUrl || "/placeholder.jpg"} alt={`Design by ${design.name}`} className="image" />
+              <img
+                src={design.imageUrl ? `https://shyara-gold.onrender.com/${design.imageUrl}` : "/placeholder.jpg"}
+                alt={`Design by ${design.name}`}
+                className="image"
+              />
             </div>
-          ))
-        ) : (
-          <p>No designs available</p>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p>No designs available</p>
+      )}
 
       <h2 className="addDesignText">Add Your Design</h2>
 
       <div className="formContainer">
         <h3 className="formTitle">Details</h3>
         {error && <p className="errorText">{error}</p>}
+        {successMessage && <p className="successText">{successMessage}</p>}
+        
         <form onSubmit={handleSubmit}>
-          <div className="formGroup"><input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Enter your name" className="input" required /></div>
-          <div className="formGroup"><input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email" className="input" required /></div>
-          <div className="formGroup"><input type="text" name="mobile" value={formData.mobile} onChange={handleInputChange} placeholder="Enter your mobile number" className="input" required /></div>
-          <div className="formGroup"><input type="text" name="material" value={formData.material} onChange={handleInputChange} placeholder="Preferred material" className="input" required /></div>
-          <div className="formGroup"><input type="text" name="style" value={formData.style} onChange={handleInputChange} placeholder="Design style" className="input" required /></div>
-          <div className="formGroup"><input type="text" name="goldType" value={formData.goldType} onChange={handleInputChange} placeholder="Type of gold" className="input" required /></div>
-          <div className="formGroup"><input type="file" onChange={handleFileChange} accept="image/*" required />{previewUrl && <img src={previewUrl} alt="Preview" width="100" />}</div>
-          <button type="submit" className="submitButton" disabled={loading}>{loading ? 'Uploading...' : 'Send'}</button>
+          <div className="formGroup">
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Enter your name" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="mobile" value={formData.mobile} onChange={handleInputChange} placeholder="Enter your mobile number" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="material" value={formData.material} onChange={handleInputChange} placeholder="Preferred material" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="style" value={formData.style} onChange={handleInputChange} placeholder="Design style" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="text" name="goldType" value={formData.goldType} onChange={handleInputChange} placeholder="Type of gold" className="input" required />
+          </div>
+          <div className="formGroup">
+            <input type="file" onChange={handleFileChange} accept="image/jpeg, image/png, image/webp" required />
+            {previewUrl && <img src={previewUrl} alt="Preview" width="100" />}
+          </div>
+          <button type="submit" className="submitButton" disabled={loading}>
+            {loading ? 'Uploading...' : 'Send'}
+          </button>
         </form>
       </div>
 
       <Link to="/" className="backLink">Back to Home</Link>
       <Footer />
     </div>
-    
   );
 };
 
