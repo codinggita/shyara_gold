@@ -10,12 +10,13 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json()); // Middleware for JSON requests
 
-// ✅ CORS Setup (Fixed)
+
 app.use(cors({
-  origin: ["http://localhost:5173", "https://shyara-gold.netlify.app/"], // Add your frontend URLs
-  methods: "GET,POST,PUT,DELETE",
-  credentials: true
-}));
+    origin: ["http://localhost:5173", "https://shyara-gold.netlify.app"], // ❌ Remove trailing slashes
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true
+  }));
+  
 
 const PORT = process.env.PORT || 4001;
 
