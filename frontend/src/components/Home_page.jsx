@@ -23,34 +23,36 @@ const JewelryStore = () => {
   const [bestSellingItems, setBestSellingItems] = useState([]);
   const [editorialItems, setEditorialItems] = useState([]);
   const [featuredCollection, setFeaturedCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch Best Selling Items from Backend
+  // Fetch Data from Backend
   useEffect(() => {
-    axios.get("https://shyara-gold.onrender.com/best_selling_items")
-      .then((response) => {
-        setBestSellingItems(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching best-selling items:", error);
-      });
+    const fetchData = async () => {
+      try {
+        const [bestSellingRes, editorialRes, featuredRes] = await Promise.all([
+          axios.get("https://shyara-gold.onrender.com/best_selling_items"),
+          axios.get("https://shyara-gold.onrender.com/editorial"),
+          axios.get("https://shyara-gold.onrender.com/featured")
+        ]);
 
-    // Fetch Editorial Content (Placeholder: Replace with actual API if available)
-    axios.get("https://shyara-gold.onrender.com/editorial") // Replace with correct API endpoint
-      .then((response) => {
-        setEditorialItems(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching editorial content:", error);
-      });
+        // Debugging: Log the API response
+        console.log("Best Selling Items:", bestSellingRes.data);
+        console.log("Editorial Items:", editorialRes.data);
+        console.log("Featured Collection:", featuredRes.data);
 
-    // Fetch Featured Collection (Placeholder: Replace with actual API if available)
-    axios.get("https://shyara-gold.onrender.com/featured") // Replace with correct API endpoint
-      .then((response) => {
-        setFeaturedCollection(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching featured collection:", error);
-      });
+        setBestSellingItems(bestSellingRes.data);
+        setEditorialItems(editorialRes.data);
+        setFeaturedCollection(featuredRes.data);
+      } catch (err) {
+        setError("Failed to fetch data. Please try again later.");
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Hero Section Image Slideshow
@@ -102,33 +104,31 @@ const JewelryStore = () => {
         {/* Best Selling Items */}
         <section className="best-selling">
           <h2>BEST SELLING ITEMS</h2>
-          <div className="items-grid">
-            {bestSellingItems.length > 0 ? (
-              bestSellingItems.map((item, i) => (
-                <div key={i} className="item-card">
-                  <img src={item.image} alt={item.name} />
-                  <p>{item.name}</p>
-                </div>
-              ))
-            ) : (
-              <p>Loading items...</p>
-            )}
-          </div>
+          {loading ? <p>Loading items...</p> : error ? <p className="error">{error}</p> : (
+            <div className="items-grid">
+              {bestSellingItems.length > 0 ? (
+                bestSellingItems.map((item) => (
+                  <div key={item._id} className="item-card">
+                    <img src={item.imageUrl || "/assets/img/fallback.png"} alt={item.name || "Jewelry Item"} />
+                    <p>{item.name || "Unnamed Item"}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No items available.</p>
+              )}
+            </div>
+          )}
         </section>
 
         {/* Editorial Section */}
         <section className="editorial">
           <h2>EDITORIAL</h2>
           <div className="editorial-grid">
-            {editorialItems.length > 0 ? (
-              editorialItems.map((item, i) => (
-                <div key={i} className="editorial-card">
-                  <img src={item.image} alt={`Editorial image ${i + 1}`} />
-                </div>
-              ))
-            ) : (
-              <p>Loading editorial content...</p>
-            )}
+            {["e1.webp", "e2.webp", "e3.webp", "e4.webp", "e5.webp", "e6.webp", "e7.webp", "e8.webp"].map((img, i) => (
+              <div key={i} className="editorial-card">
+                <img src={`/assets/img/${img}`} alt={`Editorial image ${i + 1}`} />
+              </div>
+            ))}
           </div>
         </section>
 
@@ -136,16 +136,18 @@ const JewelryStore = () => {
         <section className="featured">
           <h2>FEATURED COLLECTION</h2>
           <div className="featured-grid">
-            {featuredCollection.length > 0 ? (
-              featuredCollection.map((item, i) => (
-                <div key={i} className="featured-card">
-                  <img src={item.image} alt={item.name} />
-                  <p>{item.name}</p>
-                </div>
-              ))
-            ) : (
-              <p>Loading featured collection...</p>
-            )}
+            {[
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw2e92b445/images/hi-res/501X19FQQAA00_1.jpg?sw=300x300",
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw68bbae49/images/hi-res/50D4FFBCKAA02_1.jpg?sw=300x300",
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw6affd232/images/hi-res/50D2FFBRUAA09_1.jpg?sw=300x300",
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwcbdedf41/images/hi-res/50D3FFNKRAA02_1.jpg?sw=300x300",
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwea028814/images/Mia/hi-res/3822NTU.jpg?sw=300x300",
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4fb5147a/images/hi-res/50O4M12FJDBA02_1.jpg?sw=300x300"
+            ].map((img, i) => (
+              <div key={i} className="featured-card">
+                <img src={img} alt={`Featured item ${i + 1}`} />
+              </div>
+            ))}
           </div>
         </section>
 
@@ -153,6 +155,6 @@ const JewelryStore = () => {
       </main>
     </div>
   );
-};//
+};
 
 export default JewelryStore;
