@@ -10,25 +10,21 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json()); // Middleware for JSON requests
 
-// CORS Setup
-const cors = require("cors");
-
+// ✅ CORS Setup (Fixed)
 app.use(cors({
-  origin: ["http://localhost:5173", "https://shyara-gold.netlify.app"], // Add your frontend URLs
+  origin: ["http://localhost:5173", "https://shyara-gold.netlify.app/"], // Add your frontend URLs
   methods: "GET,POST,PUT,DELETE",
   credentials: true
 }));
 
-app.use(cors(corsOptions));
-
 const PORT = process.env.PORT || 4001;
 
-// MongoDB connection details
+// ✅ MongoDB connection details
 const homeUri = process.env.HOME_MONGO_URI;
 
 let homeDb, bestSellingItems;
 
-// Initialize MongoDB for Home Page
+// ✅ Initialize MongoDB for Home Page
 async function initializeDatabase() {
     try {
         if (!homeUri) throw new Error("HOME_MONGO_URI is not set in environment variables");
@@ -65,7 +61,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'best_selling_items',
-        format: async (req, file) => 'png',
+        format: async () => 'png',
         public_id: (req, file) => file.originalname.split('.')[0],
     },
 });
