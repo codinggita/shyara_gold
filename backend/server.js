@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const app = express();
 app.use(express.static("public"));
+app.use(express.json()); // Middleware for JSON requests
 
 // CORS Setup
 const corsOptions = {
@@ -45,9 +46,6 @@ async function initializeDatabase() {
 
 initializeDatabase();
 
-// Middleware
-app.use(express.json());
-
 // Fetch Best-Selling Items
 app.get('/best_selling_items', async (req, res) => {
     try {
@@ -63,16 +61,15 @@ app.get('/best_selling_items', async (req, res) => {
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'best_selling_items', // Store images for best-selling items
+        folder: 'best_selling_items',
         format: async (req, file) => 'png',
         public_id: (req, file) => file.originalname.split('.')[0],
     },
 });
-
 const upload = multer({ storage });
 
-// Upload Best-Selling Item Image & Add Data
-app.post('/best_selling_items', upload.single('image'), async (req, res) => {
+// ✅ **Route 1: Upload Image using Form-Data (Multer + Cloudinary)**
+app.post('/best_selling_items/upload', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: "No file uploaded" });
@@ -85,9 +82,29 @@ app.post('/best_selling_items', upload.single('image'), async (req, res) => {
         const newItem = { name, price, description, imageUrl };
         const result = await bestSellingItems.insertOne(newItem);
 
-        res.status(201).json({ message: "Best-selling item added successfully", data: result });
+        res.status(201).json({ message: "Best-selling item added successfully", data: newItem });
     } catch (err) {
         console.error("Error adding best-selling item:", err);
         res.status(500).send("Error adding best-selling item: " + err.message);
     }
 });
+
+// ✅ **Route 2: Store Existing Cloudinary Image URLs via JSON**
+app.post('/best_selling_items', async (req, res) => {
+    try {
+        const { name, price, description, imageUrl } = req.body;
+
+        if (!imageUrl) {
+            return res.status(400).json({ message: "Image URL is required" });
+        }
+
+        const newItem = { name, price, description, imageUrl };
+        const result = await bestSellingItems.insertOne(newItem);
+
+        res.status(201).json({ message: "Best-selling item added successfully", data: newItem });
+    } catch (err) {
+        console.error("Error adding best-selling item:", err);
+        res.status(500).send("Error adding best-selling item: " + err.message);
+    }
+});
+
