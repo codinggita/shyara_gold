@@ -11,11 +11,14 @@ app.use(express.static("public"));
 app.use(express.json()); // Middleware for JSON requests
 
 // CORS Setup
-const corsOptions = {
-    origin: process.env.NODE_ENV === 'production' ? 'https://shayara-gold.onrender.com' : 'http://localhost:5173',
-    methods: 'GET,POST',
-    allowedHeaders: 'Content-Type',
-};
+const cors = require("cors");
+
+app.use(cors({
+  origin: ["http://localhost:5173", "https://shyara-gold.netlify.app"], // Add your frontend URLs
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true
+}));
+
 app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 4001;
@@ -30,34 +33,34 @@ async function initializeDatabase() {
     try {
         if (!homeUri) throw new Error("HOME_MONGO_URI is not set in environment variables");
         const homeClient = await MongoClient.connect(homeUri);
-        console.log("Connected to Home Page MongoDB");
+        console.log("✅ Connected to Home Page MongoDB");
         homeDb = homeClient.db("home_page");
         bestSellingItems = homeDb.collection("best_selling_items");
 
         app.listen(PORT, () => {
-            console.log(`Server running at http://localhost:${PORT}`);
+            console.log(`🚀 Server running at http://localhost:${PORT}`);
         });
 
     } catch (err) {
-        console.error("Error connecting to MongoDB:", err);
+        console.error("❌ Error connecting to MongoDB:", err);
         process.exit(1);
     }
 }
 
 initializeDatabase();
 
-// Fetch Best-Selling Items
+// ✅ **Fetch Best-Selling Items**
 app.get('/best_selling_items', async (req, res) => {
     try {
         const items = await bestSellingItems.find().toArray();
         res.status(200).json(items);
     } catch (err) {
-        console.error("Error fetching items:", err);
-        res.status(500).send("Error fetching items: " + err.message);
+        console.error("❌ Error fetching items:", err);
+        res.status(500).json({ message: "Error fetching items", error: err.message });
     }
 });
 
-// Configure Multer Storage for Cloudinary
+// ✅ **Configure Multer Storage for Cloudinary**
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -72,20 +75,22 @@ const upload = multer({ storage });
 app.post('/best_selling_items/upload', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ message: "No file uploaded" });
+            return res.status(400).json({ message: "❌ No file uploaded" });
         }
 
+        console.log("✅ File uploaded:", req.file);
+
         const { name, price, description } = req.body;
-        const imageUrl = req.file.path || req.file.secure_url; // Cloudinary URL
+        const imageUrl = req.file.path; // Cloudinary returns the URL in req.file.path
 
         // Insert into MongoDB
         const newItem = { name, price, description, imageUrl };
         const result = await bestSellingItems.insertOne(newItem);
 
-        res.status(201).json({ message: "Best-selling item added successfully", data: newItem });
+        res.status(201).json({ message: "✅ Best-selling item added successfully", data: newItem });
     } catch (err) {
-        console.error("Error adding best-selling item:", err);
-        res.status(500).send("Error adding best-selling item: " + err.message);
+        console.error("❌ Error adding best-selling item:", err);
+        res.status(500).json({ message: "Error adding best-selling item", error: err.message });
     }
 });
 
@@ -95,16 +100,16 @@ app.post('/best_selling_items', async (req, res) => {
         const { name, price, description, imageUrl } = req.body;
 
         if (!imageUrl) {
-            return res.status(400).json({ message: "Image URL is required" });
+            return res.status(400).json({ message: "❌ Image URL is required" });
         }
 
         const newItem = { name, price, description, imageUrl };
         const result = await bestSellingItems.insertOne(newItem);
 
-        res.status(201).json({ message: "Best-selling item added successfully", data: newItem });
+        res.status(201).json({ message: "✅ Best-selling item added successfully", data: newItem });
     } catch (err) {
-        console.error("Error adding best-selling item:", err);
-        res.status(500).send("Error adding best-selling item: " + err.message);
+        console.error("❌ Error adding best-selling item:", err);
+        res.status(500).json({ message: "Error adding best-selling item", error: err.message });
     }
 });
 
