@@ -1,0 +1,67 @@
+/* Collection Section */
+.collection-container {
+    padding: 80px 10%;
+    background-color: #1a1a1a;
+    text-align: center;
+  }
+  
+  .collection-title {
+    font-size: 3rem;
+    font-family: "Playfair Display", serif;
+    color: #d4af37;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .collection-item {
+    background: #222;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .collection-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .collection-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid #d4af37;
+  }
+  
+  .collection-name {
+    font-size: 1.2rem;
+    font-family: "Cormorant Garamond", serif;
+    color: #fff;
+    margin-top: 15px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .collection-title {
+      font-size: 2.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .collection-title {
+      font-size: 2rem;
+    }
+  
+    .collection-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+  

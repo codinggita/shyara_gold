@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import axios from "axios"; // Import axios for API requests
 import Navbar from "./Navbar"; // Reusable Navbar Component
 import Footer from "./Footer";
 import "../style/Home_page.css";
@@ -21,6 +20,40 @@ const JewelryStore = () => {
     "/assets/img/image4.png"
   ];
 
+  const [bestSellingItems, setBestSellingItems] = useState([]);
+  const [editorialItems, setEditorialItems] = useState([]);
+  const [featuredCollection, setFeaturedCollection] = useState([]);
+
+  // Fetch Best Selling Items from Backend
+  useEffect(() => {
+    axios.get("https://shyara-gold.onrender.com/best_selling_items")
+      .then((response) => {
+        setBestSellingItems(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching best-selling items:", error);
+      });
+
+    // Fetch Editorial Content (Placeholder: Replace with actual API if available)
+    axios.get("https://shyara-gold.onrender.com/editorial") // Replace with correct API endpoint
+      .then((response) => {
+        setEditorialItems(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching editorial content:", error);
+      });
+
+    // Fetch Featured Collection (Placeholder: Replace with actual API if available)
+    axios.get("https://shyara-gold.onrender.com/featured") // Replace with correct API endpoint
+      .then((response) => {
+        setFeaturedCollection(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching featured collection:", error);
+      });
+  }, []);
+
+  // Hero Section Image Slideshow
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
@@ -30,7 +63,7 @@ const JewelryStore = () => {
 
   return (
     <div className="store-container">
-      <Navbar /> {/* Reusable Navbar */}
+      <Navbar />
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -53,6 +86,7 @@ const JewelryStore = () => {
 
       {/* Main Content */}
       <main className="main-content">
+        {/* Store Description */}
         <section className="store-description">
           <div className="image-grid">
             <img src="/assets/img/b1.png" alt="Jewelry piece" />
@@ -69,11 +103,16 @@ const JewelryStore = () => {
         <section className="best-selling">
           <h2>BEST SELLING ITEMS</h2>
           <div className="items-grid">
-            {["b1.png", "b2.png", "b3.png", "b4.png", "b5.png", "b6.png"].map((img, i) => (
-              <div key={i} className="item-card">
-                <img src={`/assets/img/${img}`} alt={`Best selling item ${i + 1}`} />
-              </div>
-            ))}
+            {bestSellingItems.length > 0 ? (
+              bestSellingItems.map((item, i) => (
+                <div key={i} className="item-card">
+                  <img src={item.image} alt={item.name} />
+                  <p>{item.name}</p>
+                </div>
+              ))
+            ) : (
+              <p>Loading items...</p>
+            )}
           </div>
         </section>
 
@@ -81,11 +120,15 @@ const JewelryStore = () => {
         <section className="editorial">
           <h2>EDITORIAL</h2>
           <div className="editorial-grid">
-            {["e1.webp", "e2.webp", "e3.webp", "e4.webp", "e5.webp", "e6.webp", "e7.webp", "e8.webp"].map((img, i) => (
-              <div key={i} className="editorial-card">
-                <img src={`/assets/img/${img}`} alt={`Editorial image ${i + 1}`} />
-              </div>
-            ))}
+            {editorialItems.length > 0 ? (
+              editorialItems.map((item, i) => (
+                <div key={i} className="editorial-card">
+                  <img src={item.image} alt={`Editorial image ${i + 1}`} />
+                </div>
+              ))
+            ) : (
+              <p>Loading editorial content...</p>
+            )}
           </div>
         </section>
 
@@ -93,21 +136,20 @@ const JewelryStore = () => {
         <section className="featured">
           <h2>FEATURED COLLECTION</h2>
           <div className="featured-grid">
-            {["https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw2e92b445/images/hi-res/501X19FQQAA00_1.jpg?sw=300x300",
-              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw68bbae49/images/hi-res/50D4FFBCKAA02_1.jpg?sw=300x300",
-              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw6affd232/images/hi-res/50D2FFBRUAA09_1.jpg?sw=300x300",
-              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwcbdedf41/images/hi-res/50D3FFNKRAA02_1.jpg?sw=300x300",
-              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwea028814/images/Mia/hi-res/3822NTU.jpg?sw=300x300",
-              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4fb5147a/images/hi-res/50O4M12FJDBA02_1.jpg?sw=300x300"].map((img, i) => (
-              <div key={i} className="featured-card">
-                <img src={img} alt={`Featured item ${i + 1}`} />
-              </div>
-            ))}
+            {featuredCollection.length > 0 ? (
+              featuredCollection.map((item, i) => (
+                <div key={i} className="featured-card">
+                  <img src={item.image} alt={item.name} />
+                  <p>{item.name}</p>
+                </div>
+              ))
+            ) : (
+              <p>Loading featured collection...</p>
+            )}
           </div>
         </section>
 
-        {/* Footer */}
-        <Footer/>
+        <Footer />
       </main>
     </div>
   );

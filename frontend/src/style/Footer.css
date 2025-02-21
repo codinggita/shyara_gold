@@ -1,127 +1,142 @@
-/* footer */
+/* Footer */
 .footer {
-    width: 100%;
-    background: linear-gradient(135deg, #756d65, #3f3832);
-    color: #fff;
-    padding: 50px 20px;
-    text-align: center;
-    margin: 0;
-  }
-  
+  width: 100%;
+  background: linear-gradient(135deg, #756d65, #3f3832);
+  color: #fff;
+  padding: 50px 20px;
+  text-align: center;
+  margin: 0;
+}
+
+/* Footer Content */
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  gap: 20px; /* Ensure spacing between sections */
+}
+
+/* Footer Sections */
+.footer-links,
+.footer-info {
+  flex: 1;
+  min-width: 250px;
+  text-align: left; /* Ensure proper alignment */
+}
+
+/* Footer Headings */
+.footer-links h3,
+.footer-info h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #fff;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Footer Links */
+.footer-links ul {
+  list-style: none;
+  width: fit-content;
+  padding: 0;
+  margin-left: 20px; /* Adjust margin to align with heading */
+}
+
+.footer-links ul li {
+  font-size: 18px;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.footer-links ul li:hover {
+  color: #f5c518;
+}
+
+
+/* Footer Info */
+.footer-info p {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  font-size: 16px;
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #fff;
+  text-align: center;
+}
+
+/* Logo Styling */
+.logo-container {
+  display: flex;
+  justify-content: center; /* Center logo */
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Media Queries for Full Responsiveness */
+@media (max-width: 768px) {
   .footer-content {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding-bottom: 20px;
-    padding-left: 50px;
+    flex-direction: column;
+    align-items: center; /* Center items */
+    text-align: center; /* Ensure text aligns properly */
   }
-  
+
   .footer-links,
   .footer-info {
-    flex: 1;
-    min-width: 250px;
-    text-align: left;
+    width: 100%;
+    text-align: center; /* Center text */
   }
-  
+
+  .footer-links ul li {
+    font-size: 10px;
+  }
+
+  .footer-info p {
+    font-size: 16px;
+  }
+
+  .footer-bottom {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 30px 10px;
+  }
+
   .footer-links h3,
   .footer-info h3 {
-    font-size: 22px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #fff;
-    display: inline-block;
-    padding-bottom: 5px;
+    font-size: 20px;
   }
-  
-  .footer-links ul {
-    list-style: none;
-    padding: 0;
-  }
-  
+
   .footer-links ul li {
-    font-size: 18px;
-    margin: 10px 0;
-    width:max-content;
-    cursor: pointer;
-    transition: color 0.3s;
+    font-size: 14px;
   }
-  
-  .footer-links ul li:hover {
-    color: #f5c518;
-  }
-  
+
   .footer-info p {
-    font-size: 18px;
-    margin: 8px 0;
+    font-size: 14px;
   }
-  
+
   .footer-bottom {
-    font-size: 16px;
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #fff;
+    font-size: 12px;
   }
-  
-  /* Logo Styling */
-  .logo-container {
-    display: flex;
-    align-items: center;
-  }
-  
+
   .logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 50px;
+    height: 50px;
   }
-  
-  /* Media Queries for Responsiveness */
-  @media (max-width: 768px) {
-    .footer-content {
-      padding-left: 20px; /* Reduce padding for smaller screens */
-    }
-  
-    .footer-links,
-    .footer-info {
-      min-width: 100%; /* Ensure full width on smaller screens */
-      text-align: center; /* Center text */
-      margin-bottom: 20px; /* Add space between sections */
-    }
-  
-    .footer-links ul li {
-      font-size: 16px; /* Reduce font size for better readability */
-    }
-  
-    .footer-info p {
-      font-size: 16px; /* Adjust font size */
-    }
-  
-    .footer-bottom {
-      font-size: 14px; /* Reduce font size for smaller screens */
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .footer {
-      padding: 30px 10px; /* Adjust padding for small screens */
-    }
-  
-    .footer-links h3,
-    .footer-info h3 {
-      font-size: 20px; /* Reduce header size */
-    }
-  
-    .footer-links ul li {
-      font-size: 14px; /* Further reduce font size */
-    }
-  
-    .footer-info p {
-      font-size: 14px; /* Adjust paragraph font size */
-    }
-  
-    .footer-bottom {
-      font-size: 12px; /* Smaller footer text */
-    }
-  }
-  
+}

@@ -9,30 +9,17 @@ const HeroSection = () => {
     <div>
       <Navbar/>
       <div className="hero-container">
-        <div className="video-section">
-          <video autoPlay muted loop className="hero-video">
-            <source src={ringVideo} type="video/mp4" />
-            {/* If video fails to load, show this background */}
-            <div className="video-fallback"></div>
-          </video>
-        </div>
+      <video className="hero-video" autoPlay loop muted>
+        <source src={ringVideo} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div className="hero-overlay"></div>
+      <div className="hero-content">
+        <h1 className="luxury-title">Shyara Gold</h1>
+        <p className="luxury-subtitle">Your Style, Your Statement</p>
+      </div>
+    
         
-        <div className="hero-text">
-          <div className="animated-title">
-            <h1 style={{ fontFamily: 'Mea Culpa, cursive' }}>
-              {'Shyara Gold'.split('').map((letter, index) => (
-                <span 
-                  key={index} 
-                  className="animated-letter"
-                  style={{ '--i': index }}
-                >
-                  {letter}
-                </span>
-              ))}
-            </h1>
-            <p className="subtitle">Elegance in Every Detail</p>
-          </div>
-        </div>
       </div>
     </div>
   );

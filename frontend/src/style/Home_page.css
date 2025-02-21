@@ -80,6 +80,7 @@
   
   .main-content section {
     margin-bottom: 4rem;
+    margin-top: 7rem;
   }
   
   /* Store description */
@@ -158,7 +159,7 @@
   /* Editorial section */
   .editorial-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
   }
   
@@ -204,8 +205,8 @@
   }
   
   .featured h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
     color: #333;
   }
   
@@ -234,4 +235,42 @@
     border-radius: 10px;
   }
   
- 
+  @media (max-width: 768px) {
+    .hero-section {
+        height: calc(50vh - 80px); /* Adjust height based on navbar */
+        margin-top: 100px;
+    }
+
+    .hero-image {
+        margin-top: 0;
+        height: 100%;
+        width: 100%;
+        object-fit:fill; /* Ensures full coverage */
+    }
+}
+@media (max-width: 768px) {
+  .items-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Creates 2 columns */
+      gap: 0.5rem; /* Adjust spacing between items */
+  }
+}
+@media (max-width: 768px) {
+  .items-grid,
+  .editorial-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 columns */
+      gap: 0.5rem; /* Adjust spacing */
+  }
+}
+@media (max-width: 768px) {
+  .items-grid,
+  .editorial-grid,
+  .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 columns */
+      gap: 0.5rem; /* Adjust spacing */
+  }
+}
+
+
