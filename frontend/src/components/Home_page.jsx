@@ -153,6 +153,6 @@ const JewelryStore = () => {
       </main>
     </div>
   );
-};
+};//
 
 export default JewelryStore;
