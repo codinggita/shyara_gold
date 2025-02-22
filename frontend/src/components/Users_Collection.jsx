@@ -164,7 +164,6 @@ const UsersCollection = () => {
         </form>
       </div>
 
-      <Link to="/" className="backLink">Back to Home</Link>
       <Footer />
     </div>
   );

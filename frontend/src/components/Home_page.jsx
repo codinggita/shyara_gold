@@ -21,29 +21,15 @@ const JewelryStore = () => {
   ];
 
   const [bestSellingItems, setBestSellingItems] = useState([]);
-  const [editorialItems, setEditorialItems] = useState([]);
-  const [featuredCollection, setFeaturedCollection] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch Data from Backend
+  // Fetch Best Selling Items from Backend
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [bestSellingRes, editorialRes, featuredRes] = await Promise.all([
-          axios.get("https://shyara-gold.onrender.com/best_selling_items"),
-          axios.get("https://shyara-gold.onrender.com/editorial"),
-          axios.get("https://shyara-gold.onrender.com/featured")
-        ]);
-
-        // Debugging: Log the API response
-        console.log("Best Selling Items:", bestSellingRes.data);
-        console.log("Editorial Items:", editorialRes.data);
-        console.log("Featured Collection:", featuredRes.data);
-
+        const bestSellingRes = await axios.get("https://shyara-gold.onrender.com/best_selling_items");
         setBestSellingItems(bestSellingRes.data);
-        setEditorialItems(editorialRes.data);
-        setFeaturedCollection(featuredRes.data);
       } catch (err) {
         setError("Failed to fetch data. Please try again later.");
         console.error("Error fetching data:", err);
@@ -88,19 +74,6 @@ const JewelryStore = () => {
 
       {/* Main Content */}
       <main className="main-content">
-        {/* Store Description */}
-        <section className="store-description">
-          <div className="image-grid">
-            <img src="/assets/img/b1.png" alt="Jewelry piece" />
-            <img src="/assets/img/b2.png" alt="Jewelry piece" />
-          </div>
-          <div className="description-content">
-            <h2>JEWELLERY STORE</h2>
-            <p>Offering collector's choice of traditional and contemporary designs in regional fine appearance.</p>
-            <p>We offer a wide range of designs both in gold and silver.</p>
-          </div>
-        </section>
-
         {/* Best Selling Items */}
         <section className="best-selling">
           <h2>BEST SELLING ITEMS</h2>
@@ -150,7 +123,7 @@ const JewelryStore = () => {
             ))}
           </div>
         </section>
-
+    
         <Footer />
       </main>
     </div>
