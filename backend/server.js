@@ -71,23 +71,38 @@ const upload = multer({ storage });
 // ✅ **Route 1: Upload Image using Form-Data (Multer + Cloudinary)**
 app.post('/best_selling_items/upload', upload.single('image'), async (req, res) => {
     try {
+        console.log("🔹 POST request received at /best_selling_items/upload");
+
+        // Log request body
+        console.log("🔹 Request Body:", req.body);
+
+        // Log file upload
         if (!req.file) {
+            console.log("❌ No file uploaded");
             return res.status(400).json({ message: "❌ No file uploaded" });
         }
-
-        console.log("✅ File uploaded:", req.file);
+        console.log("✅ Uploaded File:", req.file);
 
         const { name, price, description } = req.body;
-        const imageUrl = req.file.path; // Cloudinary returns the URL in req.file.path
+
+        if (!name || !price || !description) {
+            console.log("❌ Missing required fields:", { name, price, description });
+            return res.status(400).json({ message: "❌ Missing required fields" });
+        }
+
+        const imageUrl = req.file.path;
+        console.log("✅ Image URL:", imageUrl);
 
         // Insert into MongoDB
         const newItem = { name, price, description, imageUrl };
         const result = await bestSellingItems.insertOne(newItem);
 
+        console.log("✅ Successfully added to database:", newItem);
         res.status(201).json({ message: "✅ Best-selling item added successfully", data: newItem });
+
     } catch (err) {
-        console.error("❌ Error adding best-selling item:", err);
-        res.status(500).json({ message: "Error adding best-selling item", error: err.message });
+        console.error("❌ Internal Server Error:", err);
+        res.status(500).json({ message: "Internal Server Error", error: err.message });
     }
 });
 
