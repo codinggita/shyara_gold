@@ -68,7 +68,7 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage });
 
-// ✅ **Route 1: Upload Image using Form-Data (Multer + Cloudinary)**
+// ✅. **Route 1: Upload Image using Form-Data (Multer + Cloudinary)**
 app.post('/best_selling_items/upload', upload.single('image'), async (req, res) => {
     try {
         console.log("🔹 POST request received at /best_selling_items/upload");
