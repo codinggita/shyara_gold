@@ -11,23 +11,12 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+// ✅ Fixed: Cleaned up CORS configuration
 app.use(cors({
     origin: ["http://localhost:5173", "https://shyara-gold.netlify.app"],
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
-
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://shyara-gold.netlify.app");
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
-    next();
-});
-
-
-
 
 const PORT = process.env.PORT || 4001;
 
@@ -61,6 +50,21 @@ async function initializeDatabase() {
 }
 initializeDatabase();
 
+// ✅ Fixed: Added missing route for `/best_selling_items`
+app.get('/best_selling_items', async (req, res) => {
+    try {
+        if (!bestSellingItems) {
+            return res.status(500).json({ message: "Database not initialized yet" });
+        }
+
+        const items = await bestSellingItems.find({}).toArray();
+        res.status(200).json(items);
+    } catch (err) {
+        res.status(500).json({ message: "Internal Server Error", error: err.message });
+    }
+});
+
+// ✅ Image Upload to Cloudinary
 const userDesignStorage = new CloudinaryStorage({
     cloudinary,
     params: {
@@ -75,13 +79,11 @@ app.post('/users_design_data/upload', userDesignUpload.single('image'), async (r
     try {
         const { name, email, description } = req.body;
 
-        // Check if required fields are present
         if (!name || !email || !description || !req.file) {
             return res.status(400).json({ message: "❌ Name, email, description, and image are required" });
         }
 
-        const imageUrl = req.file.path; // Cloudinary image URL
-
+        const imageUrl = req.file.path;
         const newDesign = { name, email, description, imageUrl };
 
         await usersDesignData.insertOne(newDesign);
