@@ -1,0 +1,58 @@
+.contact-container {
+    background: #1e1e2f;
+    color: #f5c34b;
+    padding: 40px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .contact-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    color: #e4b748;
+  }
+  
+  .contact-info p, .contact-info ul {
+    font-size: 1.2rem;
+  }
+  
+  .contact-info a {
+    color: #f5c34b;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .contact-info a:hover {
+    color: #fff;
+  }
+  
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .icon {
+    font-size: 2rem;
+    color: #f5c34b;
+    transition: transform 0.3s;
+  }
+  
+  .icon:hover {
+    transform: scale(1.1);
+    color: #fff;
+  }
+  
+  .contact-footer {
+    margin-top: 30px;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .branding {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: #e4b748;
+  }
+  

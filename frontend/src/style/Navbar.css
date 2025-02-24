@@ -1,3 +1,4 @@
+
 .header {
     position: fixed;
     top: 0;
@@ -12,11 +13,12 @@
 }
 
 .nav-container {
+    text-transform: uppercase;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    width: 100%;
+    width: 97%;
     background-color: #ffffff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -40,16 +42,41 @@
 .search-input {
     border: none;
     outline: none;
-    padding: 8px;
+    padding: 7px;
     width: 100%;
-    font-size: 16px;
+    font-size: 15px;
+    background-color: #ffffff;
 }
 
+/* Navbar Links */
 .nav-links {
     list-style: none;
     display: flex;
-    
+    margin-right: 20px;
     gap: 20px;
+}
+
+.nav-links li {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #3f3832; /* Default color */
+    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Active Link (Gold Color) */
+.nav-links a.active {
+    color: #b59574; /* Gold color for active page */
+    font-weight: bold;
+}
+
+/* Hover Effect */
+.nav-links a:hover {
+    color: #b47333; /* Gold color on hover */
+    transform: scale(1.05); /* Slight zoom effect */
 }
 
 .hamburger {
@@ -58,28 +85,27 @@
     cursor: pointer;
     color: #b59574;
     margin-left: auto;
-    padding: 0 10px;
+    padding: 0 10px 0 0;
 }
 
 @media screen and (max-width: 450px) {
     /* Hide search bar in mobile */
     .search-container {
-        display: none;
+        display: flex;
     }
 
-    /* Initially hide navigation links */
-    .nav-links {
-        display: none;
-        position: static;
-        top: 60px; /* Adjust position to appear below navbar */
-        left: 0;
-        right: 0;
-        background-color: white;
-        flex-direction: row;
-        align-items: center;
-        padding: 15px 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+    
+        .nav-links {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+    
+        .nav-links.active {
+            display: flex;
+        }
+    
 
     /* Show hamburger icon */
     .hamburger {
@@ -92,5 +118,9 @@
     /* Show nav links when menu is active */
     .nav-links.active {
         display: flex;
+        letter-spacing: .5px;
+        font-size: 10px;
+        font-family: sans-serif;
     }
+
 }

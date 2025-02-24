@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import axios from "axios"; // Import axios for API requests
 import Navbar from "./Navbar"; // Reusable Navbar Component
 import Footer from "./Footer";
 import "../style/Home_page.css";
@@ -21,6 +20,28 @@ const JewelryStore = () => {
     "/assets/img/image4.png"
   ];
 
+  const [bestSellingItems, setBestSellingItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch Best Selling Items from Backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const bestSellingRes = await axios.get("https://shyara-gold.onrender.com/best_selling_items");
+        setBestSellingItems(bestSellingRes.data);
+      } catch (err) {
+        setError("Failed to fetch data. Please try again later.");
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Hero Section Image Slideshow
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
@@ -30,7 +51,7 @@ const JewelryStore = () => {
 
   return (
     <div className="store-container">
-      <Navbar /> {/* Reusable Navbar */}
+      <Navbar />
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -53,28 +74,23 @@ const JewelryStore = () => {
 
       {/* Main Content */}
       <main className="main-content">
-        <section className="store-description">
-          <div className="image-grid">
-            <img src="/assets/img/b1.png" alt="Jewelry piece" />
-            <img src="/assets/img/b2.png" alt="Jewelry piece" />
-          </div>
-          <div className="description-content">
-            <h2>JEWELLERY STORE</h2>
-            <p>Offering collector's choice of traditional and contemporary designs in regional fine appearance.</p>
-            <p>We offer a wide range of designs both in gold and silver.</p>
-          </div>
-        </section>
-
         {/* Best Selling Items */}
         <section className="best-selling">
           <h2>BEST SELLING ITEMS</h2>
-          <div className="items-grid">
-            {["b1.png", "b2.png", "b3.png", "b4.png", "b5.png", "b6.png"].map((img, i) => (
-              <div key={i} className="item-card">
-                <img src={`/assets/img/${img}`} alt={`Best selling item ${i + 1}`} />
-              </div>
-            ))}
-          </div>
+          {loading ? <p>Loading items...</p> : error ? <p className="error">{error}</p> : (
+            <div className="items-grid">
+              {bestSellingItems.length > 0 ? (
+                bestSellingItems.map((item) => (
+                  <div key={item._id} className="item-card">
+                    <img src={item.imageUrl || "/assets/img/fallback.png"} alt={item.name || "Jewelry Item"} />
+                    <p>{item.name || "Unnamed Item"}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No items available.</p>
+              )}
+            </div>
+          )}
         </section>
 
         {/* Editorial Section */}
@@ -93,21 +109,22 @@ const JewelryStore = () => {
         <section className="featured">
           <h2>FEATURED COLLECTION</h2>
           <div className="featured-grid">
-            {["https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw2e92b445/images/hi-res/501X19FQQAA00_1.jpg?sw=300x300",
+            {[
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw2e92b445/images/hi-res/501X19FQQAA00_1.jpg?sw=300x300",
               "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw68bbae49/images/hi-res/50D4FFBCKAA02_1.jpg?sw=300x300",
               "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw6affd232/images/hi-res/50D2FFBRUAA09_1.jpg?sw=300x300",
               "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwcbdedf41/images/hi-res/50D3FFNKRAA02_1.jpg?sw=300x300",
               "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwea028814/images/Mia/hi-res/3822NTU.jpg?sw=300x300",
-              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4fb5147a/images/hi-res/50O4M12FJDBA02_1.jpg?sw=300x300"].map((img, i) => (
+              "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4fb5147a/images/hi-res/50O4M12FJDBA02_1.jpg?sw=300x300"
+            ].map((img, i) => (
               <div key={i} className="featured-card">
                 <img src={img} alt={`Featured item ${i + 1}`} />
               </div>
             ))}
           </div>
         </section>
-
-        {/* Footer */}
-        <Footer/>
+    
+        <Footer />
       </main>
     </div>
   );
