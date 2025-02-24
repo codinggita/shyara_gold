@@ -1,81 +1,107 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ObjectId } = require('mongodb');
-const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('./config/cloudinaryConfig');
-require('dotenv').config();
+const { MongoClient } = require('mongodb');
+require('dotenv').config(); // To use environment variables
 
 const app = express();
 app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-    origin: ["http://localhost:5173", "https://shyara-gold.netlify.app"],
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true
-}));
 
-const PORT = process.env.PORT || 4001;
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'production' ? 'https://shayara-gold.onrender.com' : 'http://localhost:5173',  // Allow localhost for dev and your deployed URL for production
+    methods: 'GET,POST',  // Allow specific HTTP methods
+    allowedHeaders: 'Content-Type',  // Allow specific headers
+};
 
+app.use(cors(corsOptions));  // Apply the CORS options
+
+const PORT = process.env.PORT || 4001; // Use environment port for Render
+
+// MongoDB connection details using environment variables
 const homeUri = process.env.HOME_MONGO_URI;
 const usersUri = process.env.USERS_MONGO_URI;
 
-let homeDb, bestSellingItems;
+let homeDb, bestSellingItems, editorials;
 let usersDb, usersDesignData;
 
-async function initializeDatabase() {
+// Initialize MongoDB for both databases
+async function initializeDatabases() {
     try {
-        if (!homeUri || !usersUri) throw new Error("MongoDB URIs are not set in environment variables");
-
-        const homeClient = new MongoClient(homeUri);
-        await homeClient.connect();
+        // Connect to Home Page DB
+        if (!homeUri) throw new Error("HOME_MONGO_URI is not set in environment variables");
+        const homeClient = await MongoClient.connect(homeUri, { useNewUrlParser: true, useUnifiedTopology: true });
+        console.log("Connected to Home Page MongoDB");
         homeDb = homeClient.db("home_page");
         bestSellingItems = homeDb.collection("best_selling_items");
+        editorials = homeDb.collection("editorials");
 
-        const usersClient = new MongoClient(usersUri);
-        await usersClient.connect();
+        // Connect to Users Collection DB
+        if (!usersUri) throw new Error("USERS_MONGO_URI is not set in environment variables");
+        const usersClient = await MongoClient.connect(usersUri, { useNewUrlParser: true, useUnifiedTopology: true });
+        console.log("Connected to Users Collection MongoDB");
         usersDb = usersClient.db("users_collection");
         usersDesignData = usersDb.collection("users_design_data");
 
+        // Start server after DB connections
         app.listen(PORT, () => {
-            console.log(`🚀 Server running at http://localhost:${PORT}`);
+            console.log(`Server running at http://localhost:${PORT}`);
         });
+
     } catch (err) {
-        console.error("❌ Error connecting to MongoDB:", err);
-        process.exit(1);
+        console.error("Error connecting to MongoDB:", err);
+        process.exit(1); // Terminate the app if DB connection fails
     }
 }
-initializeDatabase();
 
-const userDesignStorage = new CloudinaryStorage({
-    cloudinary,
-    params: {
-        folder: 'users_design_data',
-        format: async () => 'png',
-        public_id: (req, file) => file.originalname.split('.')[0],
-    },
-});
-const userDesignUpload = multer({ storage: userDesignStorage });
+initializeDatabases();
 
-app.post('/users_design_data/upload', userDesignUpload.single('image'), async (req, res) => {
+// Middleware
+app.use(express.json());
+
+// Home Page Routes
+app.get('/best_selling_items', async (req, res) => {
     try {
-        const { name, email, description } = req.body;
-
-        // Check if required fields are present
-        if (!name || !email || !description || !req.file) {
-            return res.status(400).json({ message: "❌ Name, email, description, and image are required" });
-        }
-
-        const imageUrl = req.file.path; // Cloudinary image URL
-
-        const newDesign = { name, email, description, imageUrl };
-
-        await usersDesignData.insertOne(newDesign);
-
-        res.status(201).json({ message: "✅ Design added successfully", data: newDesign });
+        const items = await bestSellingItems.find().toArray();
+        res.status(200).json(items);
     } catch (err) {
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        console.error("Error fetching items:", err);
+        res.status(500).send("Error fetching items: " + err.message);
+    }
+});
+
+app.get('/editorials', async (req, res) => {
+    try {
+        const editorialData = await editorials.find().toArray();
+        res.status(200).json(editorialData);
+    } catch (err) {
+        console.error("Error fetching editorials:", err);
+        res.status(500).send("Error fetching editorials: " + err.message);
+    }
+});
+
+// Users Collection Routes
+app.get('/users_design_data', async (req, res) => {
+    try {
+        const users = await usersDesignData.find().toArray();
+        res.status(200).json(users);
+    } catch (err) {
+        console.error("Error fetching users:", err);
+        res.status(500).send("Error fetching users: " + err.message);
+    }
+});
+
+// POST: Add new user design data
+app.post('/users_design_data', async (req, res) => {
+    console.log("POST request received on /users_design_data");
+    try {
+        const newUserData = req.body; // Data sent in the body of the POST request
+        console.log("Received Data:", newUserData);
+
+        // Insert the new user data into the users_design_data collection
+        const result = await usersDesignData.insertOne(newUserData);
+        res.status(201).json({ message: "User data added successfully", data: result });
+    } catch (err) {
+        console.error("Error adding user data:", err);
+        res.status(500).send("Error adding user data: " + err.message);
     }
 });
