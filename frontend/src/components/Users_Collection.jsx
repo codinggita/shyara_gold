@@ -83,9 +83,8 @@ const UsersCollection = () => {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("email", formData.email);
-      formData.append("description", description);
+      formDataToSend.append("description", description);
       formDataToSend.append("image", selectedFile);
-
       console.log("FormData before sending:");
       for (let pair of formDataToSend.entries()) {
         console.log(pair[0], ":", pair[1]);
@@ -171,13 +170,17 @@ const UsersCollection = () => {
               className="input-field"
               required
             />
-          </div>
+          </div >
+
+          <div className="form-group">
           <input
               type="text"
               placeholder="Enter description"
+              className="input-field"
               value={description}
               onChange={(e) => setDescription(e.target.value)} // ✅ Update state
             />
+          </div>
 
           <div className="form-group">
             <input
