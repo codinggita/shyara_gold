@@ -44,7 +44,7 @@ const JewelryStore = () => {
     <div className="store-container">
       <Navbar /> {/* Reusable Navbar */}
 
-      {/* Hero Section */}
+      {/* Hero Section. */}
       <section className="hero-section">
         <div className="hero-overlay" />
         <img src={images[currentImage]} alt="Hero Image" className="hero-image" />
