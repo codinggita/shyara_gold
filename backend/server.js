@@ -11,8 +11,9 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.use(cors({
-    origin: ["http://localhost:5173", "https://shyara-gold.netlify.app", "https://shyara-gold.onrender.com"],
+    origin: ["http://localhost:5173", "https://shyara-gold.netlify.app"],
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
