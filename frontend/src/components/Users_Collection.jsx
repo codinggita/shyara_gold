@@ -8,6 +8,7 @@ const API_URL = "https://shyara-gold.onrender.com/users_design_data";
 
 const UsersCollection = () => {
   const [designs, setDesigns] = useState([]);
+  const [description, setDescription] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -171,6 +172,12 @@ const UsersCollection = () => {
               required
             />
           </div>
+          <input
+              type="text"
+              placeholder="Enter description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)} // ✅ Update state
+            />
 
           <div className="form-group">
             <input
