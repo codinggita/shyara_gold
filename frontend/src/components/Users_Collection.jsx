@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
 import '../style/Users_Collection.css';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -12,10 +11,6 @@ const UsersCollection = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    mobile: '',
-    material: '',
-    style: '',
-    goldType: ''
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -30,15 +25,12 @@ const UsersCollection = () => {
 
   const fetchDesigns = async () => {
     try {
-      setIsLoading(true);
-      const response = await fetch(API_URL);
-      if (!response.ok) {
-        throw new Error('Failed to fetch designs');
-      }
-      const data = await response.json();
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("Failed to fetch designs");
+      const data = await res.json();
       setDesigns(data);
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      console.error("Error fetching data:", err);
     } finally {
       setIsLoading(false);
     }
@@ -54,49 +46,70 @@ const UsersCollection = () => {
       const validTypes = ["image/jpeg", "image/png", "image/webp"];
       if (!validTypes.includes(file.type)) {
         setError("Only JPG, PNG, and WEBP images are allowed");
+        setSelectedFile(null);
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
         setError("File size should be less than 5MB");
+        setSelectedFile(null);
         return;
       }
       setSelectedFile(file);
+      setError('');
       const reader = new FileReader();
       reader.onloadend = () => setPreviewUrl(reader.result);
       reader.readAsDataURL(file);
-      setError('');
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccessMessage('');
+  console.log("FormData before sending:");
+for (let pair of formDataToSend.entries()) {
+    console.log(pair[0], ":", pair[1]); // This will print key-value pairs
+}
 
-    try {
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!formData.name || !formData.email || !formData.description || !selectedFile) {
+      setError("All fields are required.");
+      return;
+  }
+
+  setLoading(true);
+  setError("");
+  setSuccessMessage("");
+
+  try {
       const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => formDataToSend.append(key, formData[key]));
-      if (selectedFile) formDataToSend.append('image', selectedFile);
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("image", selectedFile);
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: formDataToSend
+      const response = await fetch(`${API_URL}/upload`, { 
+          method: "POST",
+          body: formDataToSend,
       });
 
-      if (!response.ok) throw new Error('Failed to submit design');
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to submit design");
+      }
 
-      setFormData({ name: '', email: '', mobile: '', material: '', style: '', goldType: '' });
+      setFormData({ name: "", email: "", description: "" });
       setSelectedFile(null);
-      setPreviewUrl('');
-      setSuccessMessage('Design submitted successfully!');
+      setPreviewUrl("");
+      setSuccessMessage("Design submitted successfully!");
       fetchDesigns();
-    } catch (error) {
-      setError('Failed to submit design. Please try again.');
-    } finally {
+
+  } catch (error) {
+      setError(error.message || "Failed to submit design. Please try again.");
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
+
 
   return (
     <div className="users-collection-container">
@@ -111,7 +124,7 @@ const UsersCollection = () => {
           {designs.map((design) => (
             <div key={design._id} className="design-card">
               <img
-                src={design.imageUrl ? `https://shyara-gold.onrender.com/${design.imageUrl}` : "/placeholder.jpg"}
+                src={design.imageUrl || "/placeholder.jpg"}
                 alt={`Design by ${design.name}`}
                 className="design-image"
               />
@@ -119,7 +132,10 @@ const UsersCollection = () => {
           ))}
         </div>
       ) : (
-        <p className="no-designs">No designs available</p>
+        <p className="no-designs">
+          No designs available. <br />
+          <span className="cta">Be the first to submit your design!</span>
+        </p>
       )}
 
       <h2 className="form-heading">Add Your Design</h2>
@@ -129,26 +145,36 @@ const UsersCollection = () => {
         {successMessage && <p className="success-message">{successMessage}</p>}
 
         <form onSubmit={handleSubmit} className="design-form">
-          {Object.keys(formData).map((key) => (
-            <div key={key} className="form-group">
-              <input
-                type="text"
-                name={key}
-                value={formData[key]}
-                onChange={handleInputChange}
-                placeholder={`Enter ${key}`}
-                className="input-field"
-                required
-              />
-            </div>
-          ))}
-
           <div className="form-group">
-            <input type="file" onChange={handleFileChange} accept="image/jpeg, image/png, image/webp" required />
-            {previewUrl && <img src={previewUrl} alt="Preview" className="preview-image" />}
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Enter name"
+              className="input-field"
+              required
+            />
           </div>
 
-          <button type="submit" className="submit-btn" disabled={loading}>
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Enter email"
+              className="input-field"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+          <input type="file" name="image" onChange={handleFileChange} accept="image/jpeg, image/png, image/webp" />
+          {previewUrl && <img src={previewUrl} alt="Preview" className="preview-image" />}
+          </div>
+
+          <button type="submit" className="submit-btn" disabled={loading || !isFormValid()}>
             {loading ? 'Uploading...' : 'Submit'}
           </button>
         </form>
