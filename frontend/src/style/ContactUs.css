@@ -1,58 +1,238 @@
-.contact-container {
-    background: #1e1e2f;
-    color: #f5c34b;
-    padding: 40px;
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
+/* Contact Section Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10%;
+}
+
+.contact-section {
+  text-align: center;
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.contact-title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.contact-title span {
+  color: #b45309;
+}
+
+.contact-content {
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.contact-quote {
+  font-style: italic;
+  color: #b45309;
+  font-size: 1.25rem;
+  margin: 2rem 0;
+  padding: 1rem;
+  border-left: 4px solid #b45309;
+  background: rgba(180, 83, 9, 0.05);
+}
+
+/* Contact Information Section */
+.contact-info-section {
+  margin: 4rem 0;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.contact-info-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.contact-info-title span {
+  color: #b45309;
+}
+
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  align-items: center;
+}
+
+.contact-info-text {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.contact-item:hover {
+  transform: translateX(10px);
+}
+
+.contact-icon {
+  color: #b45309;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.contact-item div {
+  flex-grow: 1;
+}
+
+.contact-item strong {
+  display: block;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.contact-item p {
+  color: #666;
+  margin: 0;
+}
+
+/* Logo Container */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 16px rgba(180, 83, 9, 0.2);
+  animation: pulse 2s infinite;
+}
+
+.logo-image {
+  width: 280px;
+  height: 280px;
+  color: white;
+}
+
+/* Store Information Section */
+.store-info {
+  margin: 4rem 0;
+  text-align: center;
+}
+
+.store-info-title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.store-info-title span {
+  color: #b45309;
+}
+
+.store-info-content {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quote-container {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(180, 83, 9, 0.05);
+  border-radius: 1rem;
+}
+
+.customer-service-quote {
+  font-style: italic;
+  color: #b45309;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+/* Background Pattern */
+.background-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(#b45309 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 8px 16px rgba(180, 83, 9, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(180, 83, 9, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 16px rgba(180, 83, 9, 0.2);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contact-info-grid {
+    grid-template-columns: 1fr;
   }
   
-  .contact-header h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.5rem;
-    color: #e4b748;
+  .logo-circle {
+    width: 150px;
+    height: 150px;
   }
   
-  .contact-info p, .contact-info ul {
-    font-size: 1.2rem;
+  .logo-image {
+    width: 75px;
+    height: 75px;
   }
   
-  .contact-info a {
-    color: #f5c34b;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  .contact-info a:hover {
-    color: #fff;
-  }
-  
-  .social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-  }
-  
-  .icon {
+  .contact-title,
+  .store-info-title {
     font-size: 2rem;
-    color: #f5c34b;
-    transition: transform 0.3s;
   }
   
-  .icon:hover {
-    transform: scale(1.1);
-    color: #fff;
+  .customer-service-quote {
+    font-size: 1.25rem;
   }
-  
-  .contact-footer {
-    margin-top: 30px;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .branding {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    color: #e4b748;
-  }
-  
+}
