@@ -82,6 +82,7 @@ const UsersCollection = () => {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("email", formData.email);
+      formData.append("description", description);
       formDataToSend.append("image", selectedFile);
 
       console.log("FormData before sending:");
