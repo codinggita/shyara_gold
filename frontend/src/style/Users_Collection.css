@@ -1,205 +1,142 @@
-Global Styles
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #FDF2F5;
-    overflow-x: hidden;
-  }
-  
-  /* Navbar Styles */
-  .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
-    background-color: #a42727;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    height: 60px;
-    width: 100%;
-  }
-  
-  .navbar .leftSection {
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar .logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #374151;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-  }
-  
-  .navbar .logoText {
-    color: #F59E0B;
-    font-size: 0.7rem;
-  }
-  
-  .navbar .searchContainer {
-    position: relative;
-  }
-  
-  .navbar .searchInput {
-    padding-left: 2rem;
-    padding-right: 1rem;
-    padding-top: 0.4rem;
-    padding-bottom: 0.4rem;
-    border-radius: 9999px;
-    background-color: #FDF2F5;
-    width: 200px;
-    border: none;
-    outline: none;
-    font-size: 0.9rem;
-  }
-  
-  .navbar .searchIcon {
-    position: absolute;
-    left: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9CA3AF;
-  }
-  
-  .navbar .navLinks {
-    display: flex;
-    gap: 1.2rem;
-    font-size: 0.9rem;
-  }
-  
-  .navbar .navLink {
-    text-decoration: none;
-    color: #1F2937;
-  }
-  
-  .navbar .activeLink {
-    color: #D97706;
-  }
-  
-  /* Breadcrumb Styles */
-  .breadcrumb {
-    padding: 0.75rem 1.5rem;
-    color: #4B5563;
-    font-size: 0.9rem;
-  }
-  
-  .breadcrumb .redText {
-    color: #DC2626;
-  }
-  
-  /* Main Content Styles */
-  .mainContent {
-    padding: 0.5rem 1.5rem;
-    width: 100%;
-    max-width: 100vw;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .mainContent .title {
-    font-size: 1.8rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    font-family: serif;
-    position: relative;
-  }
-  
-  .mainContent .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin: 0 auto 2rem auto;
-    width: 100%;
-    max-width: 1200px;
-  }
-  
-  .mainContent .imageContainer {
-    aspect-ratio: 1;
-    border-radius: 0.8rem;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    background-color: #fff;
-    padding: 0.4rem;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .mainContent .imageContainer:hover {
-    transform: scale(1.05);
-  }
-  
-  .mainContent .image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 0.6rem;
-  }
-  
-  .mainContent .addDesignText {
-    text-align: center;
-    font-size: 1.3rem;
-    font-family: serif;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Form Styles */
-  .formContainer {
-    background-color: rgba(158, 158, 158, 0.2);
-    padding: 1.5rem;
-    border-radius: 0.8rem;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto 2rem auto;
-    backdrop-filter: blur(5px);
-  }
-  
-  .formContainer .formTitle {
-    font-size: 1.3rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-family: serif;
-    color: #333;
-  }
-  
-  .formContainer .formGroup {
-    margin-bottom: 1rem;
-  }
-  
-  .formContainer .input {
-    width: 100%;
-    padding: 0.6rem;
-    border-radius: 0.4rem;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    outline: none;
-    font-size: 0.9rem;
-    transition: border-color 0.2s ease;
-  }
-  
-  .formContainer .submitButton {
-    background-color: #D97706;
-    color: #fff;
-    padding: 0.6rem 2rem;
-    border-radius: 0.4rem;
-    border: none;
-    cursor: pointer;
-    display: block;
-    margin: 1.5rem auto 0;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-  }
-  
-  .formContainer .submitButton:hover {
-    background-color: #B45309;
-  }
-  
+/* Users Collection Page Styles */
+.users-collection-container {
+  padding: 20px;
+  text-align: center;
+  background-color: #f8f8f8;
+  margin-top: 10%;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.highlight {
+  font-weight: bold;
+  color: #d4a373;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.loading, .no-designs {
+  font-size: 18px;
+  color: #777;
+  margin: 20px 0;
+}
+
+/* Grid Layout for Designs */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  margin: 20px 0;
+}
+
+.design-card {
+  width: 250px;
+  height: 300px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.design-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Form Styling */
+.form-wrapper {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.form-heading {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.form-subtitle {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.design-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-field {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+input[type="file"] {
+  border: none;
+  font-size: 14px;
+}
+
+.preview-image {
+  margin-top: 10px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.submit-btn {
+  padding: 10px;
+  background-color: #d4a373;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.submit-btn:hover {
+  background-color: #b88b5a;
+}
+
+/* Success and Error Messages */
+.success-message {
+  color: green;
+  font-size: 14px;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+}
