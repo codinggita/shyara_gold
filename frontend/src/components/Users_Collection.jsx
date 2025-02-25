@@ -69,41 +69,41 @@ const UsersCollection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!isFormValid()) {
       setError("All fields are required.");
       return;
     }
-
+  
     setLoading(true);
     setError("");
     setSuccessMessage("");
-
+  
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("email", formData.email);
       formDataToSend.append("description", description);
       formDataToSend.append("image", selectedFile);
-      console.log("FormData before sending:");
-      for (let pair of formDataToSend.entries()) {
-        console.log(pair[0], ":", pair[1]);
-      }
-
+  
       const response = await fetch(`${API_URL}/upload`, {
         method: "POST",
         body: formDataToSend,
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to submit design");
       }
-
+  
       setFormData({ name: "", email: "" });
       setSelectedFile(null);
       setPreviewUrl("");
-      setSuccessMessage("Design submitted successfully!");
+      
+      // ✅ Show success message with effect
+      setSuccessMessage("Design submitted successfully! 🎉");
+      setTimeout(() => setSuccessMessage(""), 3000); // Hide after 3 seconds
+  
       fetchDesigns();
     } catch (error) {
       setError(error.message || "Failed to submit design. Please try again.");
@@ -111,8 +111,10 @@ const UsersCollection = () => {
       setLoading(false);
     }
   };
+  
 
   return (
+    
     <div className="users-collection-container">
       <Navbar />
       <div className="breadcrumb">
@@ -120,8 +122,10 @@ const UsersCollection = () => {
       </div>
       <h1 className="title">Customers Design</h1>
 
-      {isLoading ? (
-        <p className="loading">Loading...</p>
+            {isLoading ? (
+        <div className="loader-container">
+          <div className="loader"></div>
+        </div>
       ) : designs.length > 0 ? (
         <div className="grid-container">
           {designs.map((design) => (
@@ -140,6 +144,7 @@ const UsersCollection = () => {
           <span className="cta">Be the first to submit your design!</span>
         </p>
       )}
+
 
       <h2 className="form-heading">Add Your Design</h2>
       <div className="form-wrapper">
@@ -196,6 +201,7 @@ const UsersCollection = () => {
             {loading ? "Uploading..." : "Submit"}
           </button>
         </form>
+        
       </div>
       <Footer />
     </div>

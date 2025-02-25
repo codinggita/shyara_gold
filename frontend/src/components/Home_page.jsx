@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Spinner from "./Spinner"; 
 import axios from "axios"; // Import Axios
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
@@ -25,6 +26,20 @@ const JewelryStore = () => {
     "/assets/img/image3.png",
     "/assets/img/image4.png"
   ];
+
+  useEffect(() => {
+    fetch("https://shyara-gold.onrender.com/best_selling_items")
+      .then((response) => response.json())
+      .then((data) => {
+        setBestSellingItems(data);
+        setLoading(false); // Stop loading when data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching best selling items:", error);
+        setLoading(false);
+      });
+  }, []);
+
 
   // Automatic image rotation with smooth transitions
   useEffect(() => {
@@ -63,10 +78,13 @@ const JewelryStore = () => {
   }, []);
 
   return (
+    
     <div className="store-container">
+
       <Navbar /> {/* Reusable Navbar */}
 
       {/* Hero Section with Smooth Transitions */}
+      
       <section className="hero-section">
         <div className="hero-overlay" />
         <img src={images[currentImage]} alt="Hero Image" className="hero-image fade-in" />
@@ -105,7 +123,7 @@ const JewelryStore = () => {
           <h2>BEST SELLING ITEMS</h2>
           <div className="items-grid">
             {loading ? (
-              <p>Loading best-selling items...</p>
+              <Spinner />
             ) : error ? (
               <p>{error}</p>
             ) : (

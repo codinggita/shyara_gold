@@ -5,6 +5,7 @@ import UsersCollection from "./components/Users_Collection";
 import AboutUs from "./components/AboutUs";
 import ContactUs from "./components/ContactUs";
 import Collection from "./components/Collection";
+import Spinner from "./components/Spinner"; // Import Spinner component
 import "./App.css";
 
 function App() {
@@ -13,16 +14,13 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 2000); // Simulated loading time
+    }, 3000); // Simulated loading time
   }, []);
 
   return (
-    <Router>
-      {loading ? (
-        <div className="diamond-loader-container">
-          <div className="diamond"></div>
-        </div>
-      ) : (
+    <div style={{ opacity: loading ? 1 : 2, transition: "opacity 0.5s ease-in-out" }}>
+      <Router>
+        {loading && <Spinner />} {/* Show spinner only when loading */}
         <Routes>
           <Route path="/" element={<Home_page />} />
           <Route path="/users-collection" element={<UsersCollection />} />
@@ -30,8 +28,8 @@ function App() {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/collection" element={<Collection />} />
         </Routes>
-      )}
-    </Router>
+      </Router>
+    </div>
   );
 }
 
