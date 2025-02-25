@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import '../style/Users_Collection.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "../style/Users_Collection.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -8,16 +8,17 @@ const API_URL = "https://shyara-gold.onrender.com/users_design_data";
 
 const UsersCollection = () => {
   const [designs, setDesigns] = useState([]);
+  const [description, setDescription] = useState("");
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: "",
+    email: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     fetchDesigns();
@@ -55,70 +56,76 @@ const UsersCollection = () => {
         return;
       }
       setSelectedFile(file);
-      setError('');
+      setError("");
       const reader = new FileReader();
       reader.onloadend = () => setPreviewUrl(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
-  console.log("FormData before sending:");
-for (let pair of formDataToSend.entries()) {
-    console.log(pair[0], ":", pair[1]); // This will print key-value pairs
-}
+  const isFormValid = () => {
+    return formData.name.trim() !== "" && formData.email.trim() !== "" && selectedFile !== null;
+  };
 
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (!formData.name || !formData.email || !formData.description || !selectedFile) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (!isFormValid()) {
       setError("All fields are required.");
       return;
-  }
-
-  setLoading(true);
-  setError("");
-  setSuccessMessage("");
-
-  try {
+    }
+  
+    setLoading(true);
+    setError("");
+    setSuccessMessage("");
+  
+    try {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("email", formData.email);
-      formDataToSend.append("description", formData.description);
+      formDataToSend.append("description", description);
       formDataToSend.append("image", selectedFile);
-
-      const response = await fetch(`${API_URL}/upload`, { 
-          method: "POST",
-          body: formDataToSend,
+  
+      const response = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        body: formDataToSend,
       });
-
+  
       if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to submit design");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit design");
       }
-
-      setFormData({ name: "", email: "", description: "" });
+  
+      setFormData({ name: "", email: "" });
       setSelectedFile(null);
       setPreviewUrl("");
-      setSuccessMessage("Design submitted successfully!");
+      
+      // ✅ Show success message with effect
+      setSuccessMessage("Design submitted successfully! 🎉");
+      setTimeout(() => setSuccessMessage(""), 3000); // Hide after 3 seconds
+  
       fetchDesigns();
-
-  } catch (error) {
+    } catch (error) {
       setError(error.message || "Failed to submit design. Please try again.");
-  } finally {
+    } finally {
       setLoading(false);
-  }
-};
-
+    }
+  };
+  
 
   return (
+    
     <div className="users-collection-container">
       <Navbar />
-      <div className="breadcrumb">Home &gt; <span className="highlight">Collection</span></div>
+      <div className="breadcrumb">
+        Home &gt; <span className="highlight">Collection</span>
+      </div>
       <h1 className="title">Customers Design</h1>
 
-      {isLoading ? (
-        <p className="loading">Loading...</p>
+            {isLoading ? (
+        <div className="loader-container">
+          <div className="loader"></div>
+        </div>
       ) : designs.length > 0 ? (
         <div className="grid-container">
           {designs.map((design) => (
@@ -137,6 +144,7 @@ const handleSubmit = async (e) => {
           <span className="cta">Be the first to submit your design!</span>
         </p>
       )}
+
 
       <h2 className="form-heading">Add Your Design</h2>
       <div className="form-wrapper">
@@ -167,17 +175,33 @@ const handleSubmit = async (e) => {
               className="input-field"
               required
             />
+          </div >
+
+          <div className="form-group">
+          <input
+              type="text"
+              placeholder="Enter description"
+              className="input-field"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)} // ✅ Update state
+            />
           </div>
 
           <div className="form-group">
-          <input type="file" name="image" onChange={handleFileChange} accept="image/jpeg, image/png, image/webp" />
-          {previewUrl && <img src={previewUrl} alt="Preview" className="preview-image" />}
+            <input
+              type="file"
+              name="image"
+              onChange={handleFileChange}
+              accept="image/jpeg, image/png, image/webp"
+            />
+            {previewUrl && <img src={previewUrl} alt="Preview" className="preview-image" />}
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading || !isFormValid()}>
-            {loading ? 'Uploading...' : 'Submit'}
+            {loading ? "Uploading..." : "Submit"}
           </button>
         </form>
+        
       </div>
       <Footer />
     </div>

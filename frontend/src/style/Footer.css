@@ -99,8 +99,12 @@
     width: 100%;
     text-align: center; /* Center text */
   }
+  .footer-links ul{
+    width: 90%;
+  }
 
   .footer-links ul li {
+    
     font-size: 10px;
   }
 

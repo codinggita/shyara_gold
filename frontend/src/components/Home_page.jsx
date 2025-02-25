@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios"; // Import axios for API requests
+import Spinner from "./Spinner"; 
+import axios from "axios"; // Import Axios
+import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
 import Navbar from "./Navbar"; // Reusable Navbar Component
 import Footer from "./Footer";
 import "../style/Home_page.css";
@@ -13,6 +16,10 @@ const pages = [
 
 const JewelryStore = () => {
   const [currentImage, setCurrentImage] = useState(0);
+  const [bestSellingItems, setBestSellingItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const images = [
     "/assets/img/image1.png",
     "/assets/img/image2.png",
@@ -20,28 +27,21 @@ const JewelryStore = () => {
     "/assets/img/image4.png"
   ];
 
-  const [bestSellingItems, setBestSellingItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Fetch Best Selling Items from Backend
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const bestSellingRes = await axios.get("https://shyara-gold.onrender.com/best_selling_items");
-        setBestSellingItems(bestSellingRes.data);
-      } catch (err) {
-        setError("Failed to fetch data. Please try again later.");
-        console.error("Error fetching data:", err);
-      } finally {
+    fetch("https://shyara-gold.onrender.com/best_selling_items")
+      .then((response) => response.json())
+      .then((data) => {
+        setBestSellingItems(data);
+        setLoading(false); // Stop loading when data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching best selling items:", error);
         setLoading(false);
-      }
-    };
-
-    fetchData();
+      });
   }, []);
 
-  // Hero Section Image Slideshow
+
+  // Automatic image rotation with smooth transitions
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
@@ -49,14 +49,45 @@ const JewelryStore = () => {
     return () => clearInterval(timer);
   }, []);
 
-  return (
-    <div className="store-container">
-      <Navbar />
+  // Keyboard navigation for hero section
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowRight") {
+        setCurrentImage((prev) => (prev + 1) % images.length);
+      } else if (e.key === "ArrowLeft") {
+        setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
+      }
+    };
 
-      {/* Hero Section */}
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Fetch best-selling items from backend
+  useEffect(() => {
+    axios.get("https://shyara-gold.onrender.com/best_selling_items", { withCredentials: true })
+    .then(response => {
+        setBestSellingItems(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Error fetching best-selling items:", error);
+        setError("Failed to load items");
+        setLoading(false);
+      });
+  }, []);
+
+  return (
+    
+    <div className="store-container">
+
+      <Navbar /> {/* Reusable Navbar */}
+
+      {/* Hero Section with Smooth Transitions */}
+      
       <section className="hero-section">
         <div className="hero-overlay" />
-        <img src={images[currentImage]} alt="Hero Image" className="hero-image" />
+        <img src={images[currentImage]} alt="Hero Image" className="hero-image fade-in" />
         <div className="hero-content">
           <h1>{pages[currentImage].title}</h1>
           <p>{pages[currentImage].subtitle}</p>
@@ -67,6 +98,7 @@ const JewelryStore = () => {
               key={index}
               onClick={() => setCurrentImage(index)}
               className={`indicator ${currentImage === index ? "active" : ""}`}
+              aria-label={`Go to ${pages[index].title}`}
             />
           ))}
         </div>
@@ -74,23 +106,34 @@ const JewelryStore = () => {
 
       {/* Main Content */}
       <main className="main-content">
-        {/* Best Selling Items */}
+        <section className="store-description">
+          <div className="image-grid">
+            <img src="/assets/img/b1.png" alt="Jewelry piece" loading="lazy" />
+            <img src="/assets/img/b2.png" alt="Jewelry piece" loading="lazy" />
+          </div>
+          <div className="description-content">
+            <h2>JEWELLERY STORE</h2>
+            <p>Offering collector's choice of traditional and contemporary designs in regional fine appearance.</p>
+            <p>We offer a wide range of designs both in gold and silver.</p>
+          </div>
+        </section>
+
+        {/* Best Selling Items - Improved API Handling */}
         <section className="best-selling">
           <h2>BEST SELLING ITEMS</h2>
-          {loading ? <p>Loading items...</p> : error ? <p className="error">{error}</p> : (
-            <div className="items-grid">
-              {bestSellingItems.length > 0 ? (
-                bestSellingItems.map((item) => (
-                  <div key={item._id} className="item-card">
-                    <img src={item.imageUrl || "/assets/img/fallback.png"} alt={item.name || "Jewelry Item"} />
-                    <p>{item.name || "Unnamed Item"}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No items available.</p>
-              )}
-            </div>
-          )}
+          <div className="items-grid">
+            {loading ? (
+              <Spinner />
+            ) : error ? (
+              <p>{error}</p>
+            ) : (
+              bestSellingItems.map((item, index) => (
+                <div key={index} className="item-card">
+                  <img src={item.imageUrl} alt={`Best selling item ${index + 1}`} loading="lazy" />
+                </div>
+              ))
+            )}
+          </div>
         </section>
 
         {/* Editorial Section */}
@@ -99,7 +142,7 @@ const JewelryStore = () => {
           <div className="editorial-grid">
             {["e1.webp", "e2.webp", "e3.webp", "e4.webp", "e5.webp", "e6.webp", "e7.webp", "e8.webp"].map((img, i) => (
               <div key={i} className="editorial-card">
-                <img src={`/assets/img/${img}`} alt={`Editorial image ${i + 1}`} />
+                <img src={`/assets/img/${img}`} alt={`Editorial image ${i + 1}`} loading="lazy" />
               </div>
             ))}
           </div>
@@ -118,12 +161,13 @@ const JewelryStore = () => {
               "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4fb5147a/images/hi-res/50O4M12FJDBA02_1.jpg?sw=300x300"
             ].map((img, i) => (
               <div key={i} className="featured-card">
-                <img src={img} alt={`Featured item ${i + 1}`} />
+                <img src={img} alt={`Featured item ${i + 1}`} loading="lazy" />
               </div>
             ))}
           </div>
         </section>
-    
+        
+        {/* Footer */}
         <Footer />
       </main>
     </div>
