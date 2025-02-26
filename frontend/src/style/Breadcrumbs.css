@@ -1,0 +1,31 @@
+.breadcrumb {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 1rem 0;
+    color: #c98283; /* Set text color */
+    font-weight: bold;
+  }
+  
+  .breadcrumb a {
+    text-decoration: none; /* Remove default underline */
+    color: inherit; /* Inherit pink color */
+    position: relative; /* Required for absolute positioning of pseudo-element */
+  }
+  
+  .breadcrumb a::after {
+    content: "";
+    position: absolute;
+    bottom: -3px; /* Adjust spacing below the text */
+    left: 100%; /* Start from the right */
+    width: 0%;
+    height: 3px;
+    background-color: #d4797b; /* Light red */
+    transition: all 0.4s ease-in-out;
+  }
+  
+  .breadcrumb a:hover::after {
+    width: 100%;
+    left: 0; /* Moves underline from right to left */
+  }
+  

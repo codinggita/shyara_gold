@@ -1,15 +1,17 @@
-import React from "react";
+import { motion } from "framer-motion";
 import "../style/Spinner.css";
- // Import the updated CSS file
 
-const Spinner = () => {
+const Loader = () => {
   return (
-    <div className="spinner-container">
-      <div className="spinner">
-        <div className="spinner1"></div>
-      </div>
+    <div className="loader-container">
+      {/* Simple Rotating Loader Ring */}
+      <motion.div
+        className="loader-ring"
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+      ></motion.div>
     </div>
   );
 };
 
-export default Spinner;
+export default Loader;
