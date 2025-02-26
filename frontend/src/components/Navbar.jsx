@@ -53,7 +53,7 @@ const Navbar = () => {
           </div>
           <input
             type="search"
-            placeholder="Search Rings..."
+            placeholder="Search..."
             className="search-input"
             value={searchQuery}
             onChange={handleSearch}
