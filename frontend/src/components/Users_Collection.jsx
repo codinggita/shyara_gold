@@ -117,9 +117,7 @@ const UsersCollection = () => {
     
     <div className="users-collection-container">
       <Navbar />
-      <div className="breadcrumb">
-        Home &gt; <span className="highlight">Collection</span>
-      </div>
+      
       <h1 className="title">Customers Design</h1>
 
             {isLoading ? (

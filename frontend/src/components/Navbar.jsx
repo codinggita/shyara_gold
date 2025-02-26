@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { Search, Menu } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSearch } from "../components/SearchContext"; // Import Search Context
 import logo from "/assets/img/logo.png";
 import "../style/Navbar.css";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { searchQuery, setSearchQuery } = useSearch(); // Get global search state
 
   // Close menu when Escape key is pressed
   useEffect(() => {
@@ -30,6 +33,12 @@ const Navbar = () => {
     setMenuOpen(false);
   }, [location.pathname]);
 
+  // Handle search input change
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value); // Update search query globally
+    navigate("collection/ring"); // Redirect to Rings Collection Page
+  };
+
   return (
     <header className="header">
       <nav className="nav-container">
@@ -42,7 +51,13 @@ const Navbar = () => {
           <div className="search-icon">
             <Search className="search-icon-svg" />
           </div>
-          <input type="search" placeholder="Search" className="search-input" />
+          <input
+            type="search"
+            placeholder="Search..."
+            className="search-input"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
         </div>
 
         {/* Navigation Links */}

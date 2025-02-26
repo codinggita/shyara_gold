@@ -1,3 +1,4 @@
+
 .users-collection-container {
   padding: 20px;
   text-align: center;
@@ -22,7 +23,6 @@
   margin-left: 41.5%;
   border-bottom: 1px solid gray;
   border-top: 1px solid gray;
-  padding-top: 10px;
   font-family:'Times New Roman', Times, serif;
   font-size: 28px;
   font-weight: bold;
@@ -53,7 +53,7 @@
   width: 200px;
   height: 210px;
   background: white;
-  padding: 10px;
+  padding: 5px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;

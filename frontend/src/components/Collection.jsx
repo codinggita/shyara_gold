@@ -1,14 +1,28 @@
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import React from 'react';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import "../style/Collection.css";
+
+// Import video (Ensure it's in MP4 format)
 import ringVideo from "/assets/video/ringVideo.mov";
+
+// Import images properly
+import ringsImg from "/assets/img/rings.png";
+import banglesImg from "/assets/img/b5.png";
+import necklacesImg from "/assets/img/necklaces.png";
+import chainsImg from "/assets/img/chains.png";
+import mangalsutraImg from "/assets/img/mangalsutra.png";
+import earringsImg from "/assets/img/earrings.png";
+import braceletsImg from "/assets/img/bracelets.png";
+import pendantsImg from "/assets/img/pendants.png";
 
 const HeroSection = () => (
   <div className="hero-container">
     <video className="hero-video" autoPlay loop muted>
       <source src={ringVideo} type="video/mp4" />
+      <source src="/assets/video/ringVideo.webm" type="video/webm" />
       Your browser does not support the video tag.
     </video>
     <div className="hero-overlay"></div>
@@ -23,14 +37,14 @@ const CollectionSection = () => {
   const navigate = useNavigate();
 
   const collections = [
-    { title: 'RINGS', image: '/assets/img/rings.png' },
-    { title: 'BENGALS', image: '/assets/img/bengals.png' },
-    { title: 'NECKLACES', image: '/assets/img/necklaces.png' },
-    { title: 'CHAINS', image: '/assets/img/chains.png' },
-    { title: 'MANGALSUTRA', image: '/assets/img/mangalsutra.png' },
-    { title: 'EARRINGS', image: '/assets/img/earrings.png' },
-    { title: 'BRACELETS', image: '/assets/img/bracelets.png' },
-    { title: 'PENDANTS', image: '/assets/img/pendants.png' }
+    { title: 'RINGS', image: ringsImg, path: '/collection/ring' },  // FIXED PATH
+    { title: 'BANGLES', image: banglesImg, path: '/collection/bangles' },
+    { title: 'NECKLACES', image: necklacesImg, path: '/collection/necklaces' },
+    { title: 'CHAINS', image: chainsImg, path: '/collection/chains' },
+    { title: 'MANGALSUTRA', image: mangalsutraImg, path: '/collection/mangalsutra' },
+    { title: 'EARRINGS', image: earringsImg, path: '/collection/earrings' },
+    { title: 'BRACELETS', image: braceletsImg, path: '/collection/bracelets' },
+    { title: 'PENDANTS', image: pendantsImg, path: '/collection/pendants' }
   ];
 
   return (
@@ -41,7 +55,7 @@ const CollectionSection = () => {
           <div 
             key={index} 
             className="collection-card scale-in"
-            style={{ animationDelay: `${index * 100}ms` }}
+            onClick={() => navigate(item.path)}
           >
             <img src={item.image} alt={item.title} />
             <div className="collection-overlay">
@@ -50,7 +64,11 @@ const CollectionSection = () => {
           </div>
         ))}
       </div>
-      <button className="add-collection-btn pulse" onClick={() => navigate("/users-collection")}>
+      <button 
+        className="add-collection-btn pulse" 
+        onClick={() => navigate("/users-collection")}
+        aria-label="Add a new jewelry collection"
+      >
         Add Collection
       </button>
     </div>

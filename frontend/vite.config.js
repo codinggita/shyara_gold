@@ -7,7 +7,7 @@ export default defineConfig({
   base: './',  // This ensures correct asset paths in Netlify
   server: {
     allowedHosts: [
-      '7505-2402-3a80-1ce2-49eb-3131-d8c-7340-d9c3.ngrok-free.app'
+      '8f30-2409-40c1-302e-be82-657a-f0a5-388a-ffbd.ngrok-free.app'
     ]
   },
   build: {
