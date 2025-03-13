@@ -142,7 +142,6 @@ function RingsSection() {
         <div className="hero-overlay2"></div>
         <div className="container1">
           <div className="hero-content">
-            <h1>RINGS</h1>
             <p>To own the moment</p>
           </div>
         </div>
