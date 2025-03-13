@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Menu, LogIn, LogOut, User, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useSearch } from "../components/SearchContext"; // Import Search Context
-import { isAuthenticated, getCurrentUser, logout } from "../utils/auth"; // Import auth utilities
+import { useSearch } from "../components/SearchContext";
+import { isAuthenticated, getCurrentUser, logout } from "../utils/auth";
 import logo from "/assets/img/logo.png";
 import "../style/Navbar.css";
 
@@ -14,7 +14,7 @@ const Navbar = () => {
   const searchInputRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { searchQuery, setSearchQuery } = useSearch(); // Get global search state
+  const { searchQuery, setSearchQuery } = useSearch();
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [user, setUser] = useState(getCurrentUser());
 
@@ -27,7 +27,7 @@ const Navbar = () => {
     { id: 5, name: "Platinum Band", category: "Rings", path: "/collection/ring" },
   ];
 
-  // Close menu when Escape key is pressed
+  // Handle escape key and click outside
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
@@ -65,22 +65,19 @@ const Navbar = () => {
     setSearchFocused(false);
   }, [location.pathname]);
 
-  // Check authentication status on mount and when localStorage changes
+  // Check authentication status
   useEffect(() => {
     const checkAuth = () => {
       setAuthenticated(isAuthenticated());
       setUser(getCurrentUser());
     };
 
-    // Check auth on mount
     checkAuth();
-
-    // Listen for storage events (logout in another tab)
     window.addEventListener('storage', checkAuth);
     return () => window.removeEventListener('storage', checkAuth);
   }, []);
 
-  // Filter search results when query changes
+  // Filter search results
   useEffect(() => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -128,7 +125,7 @@ const Navbar = () => {
           <img src={logo} alt="Shyara Gold Logo" className="logo" />
         </div>
 
-        {/* Search bar (Always Visible) */}
+        {/* Search bar */}
         <div className={`search-container ${searchFocused ? 'focused' : ''}`}>
           <div className="search-icon">
             <Search className="search-icon-svg" />
@@ -148,7 +145,7 @@ const Navbar = () => {
             </button>
           )}
           
-          {/* Search Results Dropdown */}
+          {/* Search Results */}
           {searchFocused && searchResults.length > 0 && (
             <div className="search-results">
               {searchResults.map(result => (
@@ -164,7 +161,7 @@ const Navbar = () => {
             </div>
           )}
           
-          {/* No Results Message */}
+          {/* No Results */}
           {searchFocused && searchQuery && searchResults.length === 0 && (
             <div className="search-results">
               <div className="no-results">No products found matching "{searchQuery}"</div>
@@ -222,33 +219,37 @@ const Navbar = () => {
           
           {/* Authentication Links */}
           {authenticated ? (
-            <li className="user-menu-container">
-              <button 
-                className="user-menu-button"
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-              >
-                <User size={20} />
-                <span>{user?.name || 'User'}</span>
-              </button>
-              {userMenuOpen && (
-                <div className="user-dropdown">
-                  {user?.role === 'admin' && (
-                    <Link to="/admin-dashboard" onClick={() => setUserMenuOpen(false)}>
-                      Admin Dashboard
-                    </Link>
-                  )}
-                  {user?.role === 'owner' && (
-                    <Link to="/owner-dashboard" onClick={() => setUserMenuOpen(false)}>
-                      Owner Dashboard
-                    </Link>
-                  )}
-                  <button onClick={handleLogout} className="logout-button">
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </button>
-                </div>
-              )}
-            </li>
+            <>
+              <li className="user-menu-container">
+                <button 
+                  className="user-menu-button"
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                >
+                  <User size={20} />
+                  <span>{user?.name || 'User'}</span>
+                </button>
+                {userMenuOpen && (
+                  <div className="user-dropdown">
+                    {user?.role === 'admin' && (
+                      <Link to="/admin-dashboard" onClick={() => setUserMenuOpen(false)}>
+                        Admin Dashboard
+                      </Link>
+                    )}
+                    {user?.role === 'owner' && (
+                      <Link to="/owner-dashboard" onClick={() => setUserMenuOpen(false)}>
+                        Owner Dashboard
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </li>
+              <li>
+                <button onClick={handleLogout} className="logout-nav-button">
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </button>
+              </li>
+            </>
           ) : (
             <>
               <li>

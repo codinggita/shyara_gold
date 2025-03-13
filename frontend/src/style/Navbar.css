@@ -13,7 +13,7 @@
     top: 0;
     left: 0;
     right: 0;
-    background-color: rgba(241, 229, 229, 0.8); /* Transparent effect */
+    background-color: rgba(241, 229, 229, 0.8);
     padding: 1rem;
     z-index: 50;
     backdrop-filter: blur(8px);
@@ -170,16 +170,15 @@
     transform: scale(1.05);
 }
 
-
 /* Right-to-Left Hover Line */
 .nav-links a::after {
     content: "";
     position: absolute;
-    bottom: -3px; /* Adjust spacing below the text */
-    left: 100%; /* Start from the right */
+    bottom: -3px;
+    left: 100%;
     width: 0%;
     height: 3px;
-    background-color: #b47333; /* Light red */
+    background-color: #b47333;
     transition: all 0.4s ease-in-out;
 }
 
@@ -206,6 +205,8 @@
     padding: 5px 10px;
     border-radius: 20px;
     transition: background-color 0.3s;
+    margin-right: 10px;
+    margin-top: -4px;
 }
 
 .user-menu-button:hover {
@@ -248,22 +249,38 @@
     background-color: rgba(181, 149, 116, 0.1);
 }
 
-.logout-button {
-    border-top: 1px solid #eee !important;
-    color: #dc3545 !important;
-}
-
 .icon-margin {
     margin-right: 5px;
 }
 
-/* Hamburger Menu (Hidden by Default) */
+/* Hamburger Menu */
 .hamburger {
     display: none;
     font-size: 24px;
     cursor: pointer;
     color: #b59574;
     padding: 0 10px;
+}
+
+/* Logout Button */
+.logout-nav-button {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #dc3545;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+    margin-top: -4px;
+}
+
+.logout-nav-button:hover {
+    background-color: rgba(220, 53, 69, 0.1);
 }
 
 /* Mobile View */
@@ -279,11 +296,9 @@
         padding: 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         text-align: center;
-        transition: all 0.3s ease-in-out;
         z-index: 100;
     }
 
-    /* Show menu when active */
     .nav-links.active {
         display: flex;
     }
@@ -303,12 +318,26 @@
     .search-results {
         width: 100%;
     }
+
+    .hamburger {
+        display: block;
+    }
+    
+    .user-menu-container {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    .logout-nav-button {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
 }
 
-
-/* Adjust Search Bar on Small Screens */
+/* Small Screens */
 @media screen and (max-width: 450px) {
     .search-container {
-        display: none; /* Hide on mobile */
+        display: none;
     }
 }
