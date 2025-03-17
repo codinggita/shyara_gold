@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSearch } from "./SearchContext";
 import "../style/RingsSection.css";
 
 const JEWELRY_TYPES = [
@@ -131,9 +132,23 @@ const RING_PRODUCTS = [
 
 function RingsSection() {
   const [selectedType, setSelectedType] = useState("All");
-
+  const { searchQuery } = useSearch();
+  
+  // Filter rings based on both type and search query
   const filteredRings = RING_PRODUCTS.filter(
-    (ring) => selectedType === "All" || ring.type === selectedType
+    (ring) => {
+      // First filter by selected type
+      const matchesType = selectedType === "All" || ring.type === selectedType;
+      
+      // Then filter by search query if one exists
+      const matchesSearch = searchQuery.trim() === "" || 
+        ring.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        ring.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ring.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Return rings that match both conditions
+      return matchesType && matchesSearch;
+    }
   );
 
   return (
@@ -181,20 +196,29 @@ function RingsSection() {
         <div className="products-section">
           <div className="section-header">
             <button className="section-title">{selectedType}</button>
+            {searchQuery && (
+              <div className="search-results-info">
+                Showing results for: "{searchQuery}" ({filteredRings.length} items)
+              </div>
+            )}
           </div>
 
           <div className="products-grid">
-            {filteredRings.map((ring) => (
-              <div key={ring.id} className="product-card">
-                <div className="product-image">
-                  <img src={ring.image} alt={ring.name} />
+            {filteredRings.length > 0 ? (
+              filteredRings.map((ring) => (
+                <div key={ring.id} className="product-card">
+                  <div className="product-image">
+                    <img src={ring.image} alt={ring.name} />
+                  </div>
+                  <div className="product-info">
+                    <h3>{ring.name}</h3>
+                    <p>{ring.type}</p>
+                  </div>
                 </div>
-                <div className="product-info">
-                  <h3>{ring.name}</h3>
-                  <p>{ring.type}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className="no-results-message"></div>
+            )}
           </div>
         </div>
       </div>

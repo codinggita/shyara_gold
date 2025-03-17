@@ -139,11 +139,6 @@ const Navbar = () => {
             onChange={handleSearch}
             onFocus={() => setSearchFocused(true)}
           />
-          {searchQuery && (
-            <button className="clear-search-btn" onClick={clearSearch}>
-              <X size={16} />
-            </button>
-          )}
           
           {/* Search Results */}
           {searchFocused && searchResults.length > 0 && (
@@ -161,12 +156,6 @@ const Navbar = () => {
             </div>
           )}
           
-          {/* No Results */}
-          {searchFocused && searchQuery && searchResults.length === 0 && (
-            <div className="search-results">
-              <div className="no-results">No products found matching "{searchQuery}"</div>
-            </div>
-          )}
         </div>
 
         {/* Navigation Links */}
