@@ -29,3 +29,10 @@
     left: 0; /* Moves underline from right to left */
   }
   
+  .breadcrumb-btn {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    margin-top: -19px;
+  }
