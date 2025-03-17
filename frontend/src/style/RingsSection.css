@@ -95,7 +95,6 @@
   .hero {
     position: relative;
     height: 832px;
-    background-color: var(--hero-bg-color);
     overflow: hidden;
   }
   
@@ -131,9 +130,10 @@
     background-image: url(/assets/img/ringbg.png);
     background-size: contain;
     background-repeat: no-repeat;
-    margin-top: 7%;
+    margin-top: 0%;
     inset: 0px;
-    background-color:#DAD3D3;
+    left: 0%;
+    right: 8%;
 }
   
   .hero-content p {

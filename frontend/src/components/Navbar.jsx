@@ -139,23 +139,6 @@ const Navbar = () => {
             onChange={handleSearch}
             onFocus={() => setSearchFocused(true)}
           />
-          
-          {/* Search Results */}
-          {searchFocused && searchResults.length > 0 && (
-            <div className="search-results">
-              {searchResults.map(result => (
-                <div 
-                  key={result.id} 
-                  className="search-result-item"
-                  onClick={() => handleSearchResultClick(result.path)}
-                >
-                  <div className="search-result-name">{result.name}</div>
-                  <div className="search-result-category">{result.category}</div>
-                </div>
-              ))}
-            </div>
-          )}
-          
         </div>
 
         {/* Navigation Links */}
