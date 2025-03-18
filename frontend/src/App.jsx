@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SearchProvider } from "./components/SearchContext";
+import ProtectedRoute from "./components/ProtectedRoute"; // Ensure the file path is correct
+import Login from "./components/Login";
 import Home_page from "./components/Home_page";
 import UsersCollection from "./components/Users_Collection";
 import AboutUs from "./components/AboutUs";
@@ -11,7 +13,11 @@ import RingsSection from "./components/RingsSection";
 import Breadcrumb from "./components/Breadcrumbs";
 import BanglesPage from "./components/BanglesPage";
 import Navbar from "./components/Navbar";
+import UserPanel from "./components/UserPanel";
+import AdminPanel from "./components/AdminPanel";
+import OwnerPanel from "./components/OwnerPanel";
 import "./App.css";
+
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -42,6 +48,7 @@ function App() {
             <ScrollToTop /> {/* ✅ Ensures scrolling to top on navigation */}
             <Navbar />
             <Routes>
+            <Route path="/" element={<Login />} />
               <Route path="/" element={<Home_page />} />
               <Route path="/users-collection" element={<UsersCollection />} />
               <Route path="/about" element={<AboutUs />} />
@@ -49,7 +56,10 @@ function App() {
               <Route path="/collection" element={<><Breadcrumb /><Collection /></>} />
               <Route path="/collection/ring" element={<><Breadcrumb /><RingsSection /></>} />
               <Route path="/collection/bangles" element={<BanglesPage />} />
-            </Routes>
+              <Route path="/admin" element={<ProtectedRoute component={AdminPanel} allowedRoles={["admin", "owner"]} />} />
+              <Route path="/user" element={<ProtectedRoute component={UserPanel} allowedRoles={["user", "admin", "owner"]} />} />
+              <Route path="/owner" element={<ProtectedRoute component={OwnerPanel} allowedRoles={["owner"]} />} />
+              </Routes>
           </div>
         )}
       </Router>

@@ -107,6 +107,7 @@ const Navbar = () => {
               Contact Us
             </Link>
           </li>
+          
         </ul>
 
         {/* Hamburger Menu Icon */}
