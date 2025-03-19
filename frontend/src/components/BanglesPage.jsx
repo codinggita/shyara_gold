@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 import React from 'react';
 import { Link } from "react-router-dom";
 import { BellRing as Ring, Crown } from 'lucide-react';
@@ -183,9 +177,7 @@ function App() {
             <div className="container1">
                 <div className="breadcrumb">
                     <span>Home</span>
-                    <span>›</span>
                     <span>Collection</span>
-                    <span>›</span>
                     <span className="active">Ring</span>
                 </div>
             </div>
