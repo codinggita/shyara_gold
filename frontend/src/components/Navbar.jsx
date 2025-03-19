@@ -4,24 +4,48 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSearch } from "../components/SearchContext"; // Import Search Context
 import logo from "/assets/img/logo.png";
 import "../style/Navbar.css";
+import { UserProfileStorageGetter } from "../utils/LocalStorageEncryption";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { searchQuery, setSearchQuery } = useSearch(); // Get global search state
+  const [usertype, setusertype] = useState("user")
 
   // Close menu when Escape key is pressed
   useEffect(() => {
+    (async () => {
+      try {
+        const userDataRaw = await UserProfileStorageGetter('user_credentials_config');
+        console.log("Retrieved User Data:", userDataRaw); // Debugging
+        
+        if (!userDataRaw || !userDataRaw.data) {
+          console.warn("User data is missing or undefined.");
+          return;
+        }
+  
+        const parsedData = JSON.parse(userDataRaw.data); // Ensure it's valid JSON
+        if (parsedData && parsedData.role) {
+          setusertype(parsedData.role);
+        } else {
+          console.warn("Invalid or incomplete user data.");
+        }
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    })();
+  
     const handleEscape = (e) => {
       if (e.key === "Escape") {
         setMenuOpen(false);
       }
     };
-
+  
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
+  
 
   // Disable body scroll when menu is open
   useEffect(() => {
@@ -107,6 +131,19 @@ const Navbar = () => {
               Contact Us
             </Link>
           </li>
+          {
+            usertype === "admin" && (
+              <li>
+                <Link
+                  to="/admin/"
+                  className={location.pathname === "/admin/dashboard" ? "active" : ""}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Admin Dashboard
+                </Link>
+              </li>
+            )
+          }
           
         </ul>
 
