@@ -5,6 +5,7 @@ import { useSearch } from "../components/SearchContext";
 import { isAuthenticated, getCurrentUser, logout } from "../utils/auth";
 import logo from "/assets/img/logo.png";
 import "../style/Navbar.css";
+import { UserProfileStorageGetter } from "../utils/LocalStorageEncryption";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,10 +15,11 @@ const Navbar = () => {
   const searchInputRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { searchQuery, setSearchQuery } = useSearch(); // Get global search state
+  const [usertype, setusertype] = useState("user")
   const { searchQuery, setSearchQuery } = useSearch();
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [user, setUser] = useState(getCurrentUser());
-
   // Mock data for search results
   const mockProducts = [
     { id: 1, name: "Gold Ring", category: "Rings", path: "/collection/ring" },
@@ -29,6 +31,27 @@ const Navbar = () => {
 
   // Handle escape key and click outside
   useEffect(() => {
+    (async () => {
+      try {
+        const userDataRaw = await UserProfileStorageGetter('user_credentials_config');
+        console.log("Retrieved User Data:", userDataRaw); // Debugging
+        
+        if (!userDataRaw || !userDataRaw.data) {
+          console.warn("User data is missing or undefined.");
+          return;
+        }
+  
+        const parsedData = JSON.parse(userDataRaw.data); // Ensure it's valid JSON
+        if (parsedData && parsedData.role) {
+          setusertype(parsedData.role);
+        } else {
+          console.warn("Invalid or incomplete user data.");
+        }
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    })();
+  
     const handleEscape = (e) => {
       if (e.key === "Escape") {
         setMenuOpen(false);
@@ -43,7 +66,7 @@ const Navbar = () => {
         setSearchFocused(false);
       }
     };
-
+  
     document.addEventListener("keydown", handleEscape);
     document.addEventListener("mousedown", handleClickOutside);
     
@@ -52,6 +75,7 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  
 
   // Disable body scroll when menu is open
   useEffect(() => {
@@ -188,7 +212,20 @@ const Navbar = () => {
               Contact Us
             </Link>
           </li>
-          
+          {
+            usertype === "admin" && (
+              <li>
+                <Link
+                  to="/admin/"
+                  className={location.pathname === "/admin/dashboard" ? "active" : ""}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Admin Dashboard
+                </Link>
+              </li>
+            )
+          }
+    
           {/* Authentication Links */}
           {authenticated ? (
             <>

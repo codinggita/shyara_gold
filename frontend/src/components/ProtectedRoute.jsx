@@ -1,4 +1,22 @@
-import React from 'react';
+// import React from 'react';
+// import { Navigate } from 'react-router-dom';
+
+// const ProtectedRoute = ({ component: Component, allowedRoles }) => {
+//     const token = localStorage.getItem('token');
+//     const userRole = localStorage.getItem('role');
+
+//     if (!token) {
+//         return <Navigate to="/login" />;
+//     }
+
+//     if (!allowedRoles.includes(userRole)) {
+//         return <Navigate to="/home" />;
+//     }
+
+//     return <Component />;
+// };
+
+// export default ProtectedRoute;
 import { Navigate, Outlet } from 'react-router-dom';
 import { isAuthenticated, hasRole } from '../utils/auth';
 
@@ -24,4 +42,4 @@ const ProtectedRoute = ({ requiredRole }) => {
   return <Outlet />;
 };
 
-export default ProtectedRoute; 
+export default ProtectedRoute; \

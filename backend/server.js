@@ -4,6 +4,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('./config/cloudinaryConfig');
+const connectUserDB = require('./.config/mongoDB.config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -27,6 +28,8 @@ const usersUri = process.env.USERS_MONGO_URI;
 
 let homeDb, bestSellingItems;
 let usersDb, usersDesignData, usersCollection;
+
+connectUserDB()
 
 async function initializeDatabase() {
     try {
